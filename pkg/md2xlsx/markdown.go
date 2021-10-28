@@ -14,9 +14,21 @@ type Markdown struct {
 func (m *Markdown) AsSpec() *Spec {
 	s := Spec{}
 	for _, n := range m.node.GetChildren() {
-		switch n.(type) {
-		case *ast.Heading:
-			s.Name = getHeadingContent(n)
+		if heading, ok := n.(*ast.Heading); ok {
+			switch heading.Level {
+			case 1:
+				s.Name = getHeadingContent(heading)
+			case 2:
+				panic("not implemented")
+			case 3:
+				panic("not implemented")
+			case 4:
+				panic("not implemented")
+			case 5:
+				panic("not implemented")
+			case 6:
+				panic("not implemented")
+			}
 		}
 	}
 	return &s
