@@ -37,7 +37,7 @@ func (b *Book) SaveAs(name string) error {
 
 func (b *Book) WriteSpec(spec *Spec, sheet string) {
 	sb := strings.Builder{}
-	i := 1
+	i := 2
 
 	for _, c := range spec.Categories {
 		setCategory(b.file, sheet, i, c.Name)
