@@ -14,27 +14,6 @@ const ProceduresCol = "D"
 const ConfirmationsCol = "E"
 const ConfirmationPrefix = '・'
 
-type Spec struct {
-	Name       string
-	Categories []*Category
-}
-
-type Category struct {
-	Name          string
-	SubCategories []*SubCategory
-}
-
-type SubCategory struct {
-	Name             string
-	SubSubCategories []*SubSubCategory
-}
-
-type SubSubCategory struct {
-	Name          string
-	Procedures    []string
-	Confirmations []string
-}
-
 type Book struct {
 	file *excelize.File
 }
@@ -56,9 +35,8 @@ func (b *Book) SaveAs(name string) error {
 	return b.file.SaveAs(name)
 }
 
-func (b *Book) WriteSpec(spec *Spec) {
+func (b *Book) WriteSpec(spec *Spec, sheet string) {
 	sb := strings.Builder{}
-	sheet := "Sheet1"
 	i := 0
 
 	for _, c := range spec.Categories {

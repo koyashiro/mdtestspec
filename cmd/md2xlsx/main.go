@@ -10,7 +10,7 @@ func main() {
 	s := exampleSpec()
 
 	b := md2xlsx.NewBook()
-	b.WriteSpec(s)
+	b.WriteSpec(s, "Sheet1")
 	if err := b.SaveAs("book.xlsx"); err != nil {
 		fmt.Println(err)
 	}
