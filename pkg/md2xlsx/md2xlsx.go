@@ -7,6 +7,16 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
+const CategoryCol = "A"
+
+const SubCategoryCol = "B"
+
+const SubSubCategoryCol = "C"
+
+const ProceduresCol = "D"
+
+const ConfirmationsCol = "E"
+
 type Spec struct {
 	Name       string
 	Categories []*Category
@@ -90,13 +100,3 @@ type SubSubCategory struct {
 	Procedures    []string
 	Confirmations []string
 }
-
-const CategoryCol = "A"
-
-const SubCategoryCol = "B"
-
-const SubSubCategoryCol = "C"
-
-const ProceduresCol = "D"
-
-const ConfirmationsCol = "E"
