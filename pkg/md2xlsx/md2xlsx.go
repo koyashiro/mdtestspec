@@ -8,13 +8,9 @@ import (
 )
 
 const CategoryCol = "A"
-
 const SubCategoryCol = "B"
-
 const SubSubCategoryCol = "C"
-
 const ProceduresCol = "D"
-
 const ConfirmationsCol = "E"
 const ConfirmationPrefix = '・'
 
