@@ -34,9 +34,17 @@ func (m *Markdown) AsSpec() *Spec {
 	return &s
 }
 
-func ParseMarkdown(input []byte) *Markdown {
+type MarkdownParser struct {
+	parser *parser.Parser
+}
+
+func NewMarkdownParser() *MarkdownParser {
 	p := parser.New()
-	n := p.Parse(input)
+	return &MarkdownParser{parser: p}
+}
+
+func (p *MarkdownParser) Parse(input []byte) *Markdown {
+	n := p.parser.Parse(input)
 	return &Markdown{node: n}
 }
 
@@ -45,7 +53,9 @@ func OpenMarkdown(filename string) (*Markdown, error) {
 	if err != nil {
 		return nil, err
 	}
-	return ParseMarkdown(b), nil
+	p := NewMarkdownParser()
+	md := p.Parse(b)
+	return md, nil
 }
 
 func getHeadingContent(heading ast.Node) string {
