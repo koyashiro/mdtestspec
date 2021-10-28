@@ -14,51 +14,65 @@ type Spec struct {
 
 func (s *Spec) SaveAs(name string) error {
 	f := excelize.NewFile()
+	sb := strings.Builder{}
 	sheet := "Sheet1"
 	i := 0
 
 	for _, c := range s.Categories {
 		for _, sc := range c.SubCategories {
 			for _, ssc := range sc.SubSubCategories {
-				axis := fmt.Sprintf("%s%d", CategoryCol, i+1)
-				f.SetCellValue(sheet, axis, c.Name)
-
-				axis = fmt.Sprintf("%s%d", SubCategoryCol, i+1)
-				f.SetCellValue(sheet, axis, sc.Name)
-
-				axis = fmt.Sprintf("%s%d", SubSubCategoryCol, i+1)
-				f.SetCellValue(sheet, axis, ssc.Name)
-
-				sb := strings.Builder{}
-
-				axis = fmt.Sprintf("%s%d", ProceduresCol, i+1)
-				for j, p := range ssc.Procedures {
-					if j != 0 {
-						sb.WriteRune('\n')
-					}
-					sb.WriteString(fmt.Sprintf("%d. ", j+1))
-					sb.WriteString(p)
-				}
-				f.SetCellValue(sheet, axis, sb.String())
-
-				sb.Reset()
-
-				axis = fmt.Sprintf("%s%d", ConfirmationsCol, i+1)
-				for j, p := range ssc.Confirmations {
-					if j != 0 {
-						sb.WriteRune('\n')
-					}
-					sb.WriteRune('・')
-					sb.WriteString(p)
-				}
-				f.SetCellValue(sheet, axis, sb.String())
-
+				setCategory(f, sheet, i+1, c.Name)
+				setSubCategory(f, sheet, i+1, sc.Name)
+				setSubSubCategory(f, sheet, i+1, ssc.Name)
+				setConfirmations(f, sheet, i+1, ssc.Confirmations, &sb)
+				setProcedures(f, sheet, i+1, ssc.Procedures, &sb)
 				i++
 			}
 		}
 	}
 
 	return f.SaveAs(name)
+}
+
+func setCategory(f *excelize.File, sheet string, row int, name string) {
+	axis := fmt.Sprintf("%s%d", CategoryCol, row)
+	f.SetCellValue(sheet, axis, name)
+}
+
+func setSubCategory(f *excelize.File, sheet string, row int, name string) {
+	axis := fmt.Sprintf("%s%d", SubCategoryCol, row)
+	f.SetCellValue(sheet, axis, name)
+}
+
+func setSubSubCategory(f *excelize.File, sheet string, row int, name string) {
+	axis := fmt.Sprintf("%s%d", SubSubCategoryCol, row)
+	f.SetCellValue(sheet, axis, name)
+}
+
+func setProcedures(f *excelize.File, sheet string, row int, procedures []string, sb *strings.Builder) {
+	sb.Reset()
+	axis := fmt.Sprintf("%s%d", ProceduresCol, row)
+	for j, p := range procedures {
+		if j != 0 {
+			sb.WriteRune('\n')
+		}
+		sb.WriteString(fmt.Sprintf("%d. ", j+1))
+		sb.WriteString(p)
+	}
+	f.SetCellValue(sheet, axis, sb.String())
+}
+
+func setConfirmations(f *excelize.File, sheet string, row int, confirmations []string, sb *strings.Builder) {
+	sb.Reset()
+	axis := fmt.Sprintf("%s%d", ConfirmationsCol, row)
+	for j, p := range confirmations {
+		if j != 0 {
+			sb.WriteRune('\n')
+		}
+		sb.WriteString(fmt.Sprintf("%d. ", j+1))
+		sb.WriteString(p)
+	}
+	f.SetCellValue(sheet, axis, sb.String())
 }
 
 type Category struct {
