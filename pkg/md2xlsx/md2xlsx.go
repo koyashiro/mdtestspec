@@ -19,26 +19,60 @@ type Spec struct {
 	Categories []*Category
 }
 
-func (s *Spec) SaveAs(name string) error {
+type Category struct {
+	Name          string
+	SubCategories []*SubCategory
+}
+
+type SubCategory struct {
+	Name             string
+	SubSubCategories []*SubSubCategory
+}
+
+type SubSubCategory struct {
+	Name          string
+	Procedures    []string
+	Confirmations []string
+}
+
+type Book struct {
+	file *excelize.File
+}
+
+func NewBook() *Book {
 	f := excelize.NewFile()
+	return &Book{file: f}
+}
+
+func OpenBook(filename string) (*Book, error) {
+	f, err := excelize.OpenFile(filename)
+	if err != nil {
+		return nil, err
+	}
+	return &Book{file: f}, nil
+}
+
+func (b *Book) SaveAs(name string) error {
+	return b.file.SaveAs(name)
+}
+
+func (b *Book) WriteSpec(spec *Spec) {
 	sb := strings.Builder{}
 	sheet := "Sheet1"
 	i := 0
 
-	for _, c := range s.Categories {
+	for _, c := range spec.Categories {
 		for _, sc := range c.SubCategories {
 			for _, ssc := range sc.SubSubCategories {
 				i++
-				setCategory(f, sheet, i, c.Name)
-				setSubCategory(f, sheet, i, sc.Name)
-				setSubSubCategory(f, sheet, i, ssc.Name)
-				setConfirmations(f, sheet, i, ssc.Confirmations, &sb)
-				setProcedures(f, sheet, i, ssc.Procedures, &sb)
+				setCategory(b.file, sheet, i, c.Name)
+				setSubCategory(b.file, sheet, i, sc.Name)
+				setSubSubCategory(b.file, sheet, i, ssc.Name)
+				setConfirmations(b.file, sheet, i, ssc.Confirmations, &sb)
+				setProcedures(b.file, sheet, i, ssc.Procedures, &sb)
 			}
 		}
 	}
-
-	return f.SaveAs(name)
 }
 
 func setCategory(f *excelize.File, sheet string, row int, name string) {
@@ -80,20 +114,4 @@ func setConfirmations(f *excelize.File, sheet string, row int, confirmations []s
 		sb.WriteString(p)
 	}
 	f.SetCellValue(sheet, axis, sb.String())
-}
-
-type Category struct {
-	Name          string
-	SubCategories []*SubCategory
-}
-
-type SubCategory struct {
-	Name             string
-	SubSubCategories []*SubSubCategory
-}
-
-type SubSubCategory struct {
-	Name          string
-	Procedures    []string
-	Confirmations []string
 }

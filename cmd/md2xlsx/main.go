@@ -9,7 +9,9 @@ import (
 func main() {
 	s := exampleSpec()
 
-	if err := s.SaveAs("book.xlsx"); err != nil {
+	b := md2xlsx.NewBook()
+	b.WriteSpec(s)
+	if err := b.SaveAs("book.xlsx"); err != nil {
 		fmt.Println(err)
 	}
 }
