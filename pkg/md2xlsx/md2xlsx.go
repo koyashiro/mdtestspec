@@ -16,6 +16,7 @@ const SubSubCategoryCol = "C"
 const ProceduresCol = "D"
 
 const ConfirmationsCol = "E"
+const ConfirmationPrefix = '・'
 
 type Spec struct {
 	Name       string
@@ -79,7 +80,7 @@ func setConfirmations(f *excelize.File, sheet string, row int, confirmations []s
 		if j != 0 {
 			sb.WriteRune('\n')
 		}
-		sb.WriteString(fmt.Sprintf("%d. ", j+1))
+		sb.WriteRune(ConfirmationPrefix)
 		sb.WriteString(p)
 	}
 	f.SetCellValue(sheet, axis, sb.String())
