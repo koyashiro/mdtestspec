@@ -15,17 +15,18 @@ type Spec struct {
 func (s *Spec) SaveAs(name string) error {
 	f := excelize.NewFile()
 	sheet := "Sheet1"
+	i := 0
 
-	for i, c := range s.Categories {
-		axis := fmt.Sprintf("%s%d", CategoryCol, i+1)
-		f.SetCellValue(sheet, axis, c.Name)
-
+	for _, c := range s.Categories {
 		for _, sc := range c.SubCategories {
-			axis := fmt.Sprintf("%s%d", SubCategoryCol, i+1)
-			f.SetCellValue(sheet, axis, sc.Name)
-
 			for _, ssc := range sc.SubSubCategories {
-				axis := fmt.Sprintf("%s%d", SubSubCategoryCol, i+1)
+				axis := fmt.Sprintf("%s%d", CategoryCol, i+1)
+				f.SetCellValue(sheet, axis, c.Name)
+
+				axis = fmt.Sprintf("%s%d", SubCategoryCol, i+1)
+				f.SetCellValue(sheet, axis, sc.Name)
+
+				axis = fmt.Sprintf("%s%d", SubSubCategoryCol, i+1)
 				f.SetCellValue(sheet, axis, ssc.Name)
 
 				sb := strings.Builder{}
@@ -51,6 +52,8 @@ func (s *Spec) SaveAs(name string) error {
 					sb.WriteString(p)
 				}
 				f.SetCellValue(sheet, axis, sb.String())
+
+				i++
 			}
 		}
 	}
