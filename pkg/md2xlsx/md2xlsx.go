@@ -32,12 +32,12 @@ func (s *Spec) SaveAs(name string) error {
 	for _, c := range s.Categories {
 		for _, sc := range c.SubCategories {
 			for _, ssc := range sc.SubSubCategories {
-				setCategory(f, sheet, i+1, c.Name)
-				setSubCategory(f, sheet, i+1, sc.Name)
-				setSubSubCategory(f, sheet, i+1, ssc.Name)
-				setConfirmations(f, sheet, i+1, ssc.Confirmations, &sb)
-				setProcedures(f, sheet, i+1, ssc.Procedures, &sb)
 				i++
+				setCategory(f, sheet, i, c.Name)
+				setSubCategory(f, sheet, i, sc.Name)
+				setSubSubCategory(f, sheet, i, ssc.Name)
+				setConfirmations(f, sheet, i, ssc.Confirmations, &sb)
+				setProcedures(f, sheet, i, ssc.Procedures, &sb)
 			}
 		}
 	}
