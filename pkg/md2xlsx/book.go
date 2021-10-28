@@ -37,19 +37,33 @@ func (b *Book) SaveAs(name string) error {
 
 func (b *Book) WriteSpec(spec *Spec, sheet string) {
 	sb := strings.Builder{}
-	i := 0
+	i := 1
 
 	for _, c := range spec.Categories {
+		setCategory(b.file, sheet, i, c.Name)
+
+		from := i
 		for _, sc := range c.SubCategories {
+			setSubCategory(b.file, sheet, i, sc.Name)
+
+			from := i
 			for _, ssc := range sc.SubSubCategories {
-				i++
-				setCategory(b.file, sheet, i, c.Name)
-				setSubCategory(b.file, sheet, i, sc.Name)
 				setSubSubCategory(b.file, sheet, i, ssc.Name)
 				setConfirmations(b.file, sheet, i, ssc.Confirmations, &sb)
 				setProcedures(b.file, sheet, i, ssc.Procedures, &sb)
+				i++
 			}
+			to := i - 1
+
+			hcell := fmt.Sprintf("%s%d", SubCategoryCol, from)
+			vcell := fmt.Sprintf("%s%d", SubCategoryCol, to)
+			b.file.MergeCell(sheet, hcell, vcell)
 		}
+		to := i - 1
+
+		hcell := fmt.Sprintf("%s%d", CategoryCol, from)
+		vcell := fmt.Sprintf("%s%d", CategoryCol, to)
+		b.file.MergeCell(sheet, hcell, vcell)
 	}
 }
 
