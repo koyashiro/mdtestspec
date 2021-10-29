@@ -9,12 +9,12 @@ import (
 )
 
 type Markdown struct {
-	node ast.Node
+	doc *ast.Document
 }
 
 func (m *Markdown) AsSpec() *Spec {
 	s := &Spec{}
-	for _, n := range m.node.GetChildren() {
+	for _, n := range m.doc.Children {
 		if heading, ok := n.(*ast.Heading); ok {
 			switch heading.Level {
 			case 1:
@@ -48,7 +48,12 @@ func NewMarkdownParser() *MarkdownParser {
 
 func (p *MarkdownParser) Parse(input []byte) *Markdown {
 	n := p.parser.Parse(input)
-	return &Markdown{node: n}
+	doc, ok := n.(*ast.Document)
+	if !ok {
+		panic("invalid node")
+	}
+
+	return &Markdown{doc: doc}
 }
 
 func OpenMarkdown(filename string) (*Markdown, error) {
