@@ -191,3 +191,33 @@ func parseOrderdList(list *ast.List) []string {
 
 	return procedures
 }
+
+func parseUnorderdList(list *ast.List) []string {
+	procedures := make([]string, 0)
+
+	if list.ListFlags != 16 {
+		panic(fmt.Sprintf("List type is not unordered, list type: %d", list.ListFlags))
+	}
+
+	for _, n := range list.Children {
+		if li, ok := n.(*ast.ListItem); ok {
+			for _, n := range li.Children {
+				if p, ok := n.(*ast.Paragraph); ok {
+					for _, n := range p.Children {
+						if t, ok := n.(*ast.Text); ok {
+							if l := string(t.Literal); l != "" {
+								procedures = append(procedures, l)
+								continue
+							}
+						}
+						continue
+					}
+				}
+				continue
+			}
+			continue
+		}
+	}
+
+	return procedures
+}

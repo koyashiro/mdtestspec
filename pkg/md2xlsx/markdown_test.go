@@ -69,6 +69,24 @@ func TestParseHeading4(t *testing.T) {
 	}
 }
 
+func TestParseUnorderedList(t *testing.T) {
+	input := `
+* Procedure 1
+* Procedure 2
+* Procedure 3
+`
+	p := parser.New()
+	n := p.Parse([]byte(input)).GetChildren()[0]
+	if l, ok := n.(*ast.List); ok {
+		p := parseUnorderdList(l)
+		if len(p) != 3 {
+			t.Errorf("len(p) = %v, want %v", len(p), 3)
+		}
+	} else {
+		t.Errorf("ok = %v, want %v", ok, true)
+	}
+}
+
 func TestParseOrderedList(t *testing.T) {
 	input := `
 1. Procedure 1
