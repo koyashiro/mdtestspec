@@ -18,18 +18,18 @@ func (m *Markdown) AsSpec() *Spec {
 		if heading, ok := n.(*ast.Heading); ok {
 			switch heading.Level {
 			case 1:
-				s.Name = parseHeading1(heading)
+				s.Name = parseHeading(heading)
 				break
 			case 2:
 				c := &Category{}
-				c.Name = parseHeading2(heading)
+				c.Name = parseHeading(heading)
 				s.Categories = append(s.Categories, c)
 				break
 			case 3:
-				s.Name = parseHeading1(heading)
+				s.Name = parseHeading(heading)
 				break
 			case 4:
-				s.Name = parseHeading1(heading)
+				s.Name = parseHeading(heading)
 				break
 			}
 		}
@@ -61,68 +61,12 @@ func OpenMarkdown(filename string) (*Markdown, error) {
 	return md, nil
 }
 
-func parseHeading1(heading *ast.Heading) string {
-	if heading.Level != 1 {
-		panic(fmt.Sprintf("Heading level is not 1, %d", heading.Level))
-	}
-
+func parseHeading(heading *ast.Heading) string {
 	for _, n := range heading.Children {
 		if t, ok := n.(*ast.Text); ok {
 			if l := string(t.Literal); l != "" {
 				return l
 			}
-			continue
-		}
-	}
-
-	return ""
-}
-
-func parseHeading2(heading *ast.Heading) string {
-	if heading.Level != 2 {
-		panic(fmt.Sprintf("Heading level is not 2, heading level: %d", heading.Level))
-	}
-
-	for _, n := range heading.Children {
-		if t, ok := n.(*ast.Text); ok {
-			if l := string(t.Literal); l != "" {
-				return l
-			}
-			continue
-		}
-	}
-
-	return ""
-}
-
-func parseHeading3(heading *ast.Heading) string {
-	if heading.Level != 3 {
-		panic(fmt.Sprintf("Heading level is not 3, heading level: %d", heading.Level))
-	}
-
-	for _, n := range heading.Children {
-		if t, ok := n.(*ast.Text); ok {
-			if l := string(t.Literal); l != "" {
-				return l
-			}
-			continue
-		}
-	}
-
-	return ""
-}
-
-func parseHeading4(heading *ast.Heading) string {
-	if heading.Level != 4 {
-		panic(fmt.Sprintf("Heading level is not 4, heading level: %d", heading.Level))
-	}
-
-	for _, n := range heading.Children {
-		if t, ok := n.(*ast.Text); ok {
-			if l := string(t.Literal); l != "" {
-				return l
-			}
-			continue
 		}
 	}
 
