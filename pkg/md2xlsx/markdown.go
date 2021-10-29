@@ -13,26 +13,14 @@ type Markdown struct {
 }
 
 func (m *Markdown) AsSpec() *Spec {
-	s := Spec{}
 	for _, n := range m.node.GetChildren() {
 		if heading, ok := n.(*ast.Heading); ok {
-			switch heading.Level {
-			case 1:
-				s.Name = getHeadingContent(heading)
-			case 2:
-				panic("not implemented")
-			case 3:
-				panic("not implemented")
-			case 4:
-				panic("not implemented")
-			case 5:
-				panic("not implemented")
-			case 6:
-				panic("not implemented")
+			if heading.Level == 1 {
+				return parseHeading1(heading)
 			}
 		}
 	}
-	return &s
+	return &Spec{}
 }
 
 type MarkdownParser struct {
@@ -57,15 +45,6 @@ func OpenMarkdown(filename string) (*Markdown, error) {
 	p := NewMarkdownParser()
 	md := p.Parse(b)
 	return md, nil
-}
-
-func getHeadingContent(heading ast.Node) string {
-	for _, n := range heading.GetChildren() {
-		if l := n.AsLeaf(); l != nil {
-			return string(l.Literal)
-		}
-	}
-	return ""
 }
 
 func parseHeading1(heading *ast.Heading) *Spec {
