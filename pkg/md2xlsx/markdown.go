@@ -75,7 +75,7 @@ func parseHeading1(heading *ast.Heading) *Spec {
 		panic(fmt.Sprintf("Heading level is not 1, %d", heading.Level))
 	}
 
-	for _, n := range heading.Container.GetChildren() {
+	for _, n := range heading.Children {
 		if t, ok := n.(*ast.Text); ok {
 			if l := string(t.Literal); l != "" {
 				s.Name = l
@@ -100,7 +100,7 @@ func parseHeading2(heading *ast.Heading) *Category {
 		panic(fmt.Sprintf("Heading level is not 2, heading level: %d", heading.Level))
 	}
 
-	for _, n := range heading.Container.GetChildren() {
+	for _, n := range heading.Children {
 		if t, ok := n.(*ast.Text); ok {
 			if l := string(t.Literal); l != "" {
 				c.Name = l
@@ -125,7 +125,7 @@ func parseHeading3(heading *ast.Heading) *SubCategory {
 		panic(fmt.Sprintf("Heading level is not 3, heading level: %d", heading.Level))
 	}
 
-	for _, n := range heading.Container.GetChildren() {
+	for _, n := range heading.Children {
 		if t, ok := n.(*ast.Text); ok {
 			if l := string(t.Literal); l != "" {
 				sc.Name = l
@@ -150,7 +150,7 @@ func parseHeading4(heading *ast.Heading) *SubSubCategory {
 		panic(fmt.Sprintf("Heading level is not 4, heading level: %d", heading.Level))
 	}
 
-	for _, n := range heading.Container.GetChildren() {
+	for _, n := range heading.Children {
 		if t, ok := n.(*ast.Text); ok {
 			if l := string(t.Literal); l != "" {
 				ssc.Name = l
