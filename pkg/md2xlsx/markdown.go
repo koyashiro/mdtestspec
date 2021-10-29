@@ -13,10 +13,24 @@ type Markdown struct {
 }
 
 func (m *Markdown) AsSpec() *Spec {
+	s := &Spec{}
 	for _, n := range m.node.GetChildren() {
 		if heading, ok := n.(*ast.Heading); ok {
-			if heading.Level == 1 {
-				return parseHeading1(heading)
+			switch heading.Level {
+			case 1:
+				s.Name = parseHeading1(heading)
+				break
+			case 2:
+				c := &Category{}
+				c.Name = parseHeading2(heading)
+				s.Categories = append(s.Categories, c)
+				break
+			case 3:
+				s.Name = parseHeading1(heading)
+				break
+			case 4:
+				s.Name = parseHeading1(heading)
+				break
 			}
 		}
 	}
@@ -47,9 +61,7 @@ func OpenMarkdown(filename string) (*Markdown, error) {
 	return md, nil
 }
 
-func parseHeading1(heading *ast.Heading) *Spec {
-	s := &Spec{}
-
+func parseHeading1(heading *ast.Heading) string {
 	if heading.Level != 1 {
 		panic(fmt.Sprintf("Heading level is not 1, %d", heading.Level))
 	}
@@ -57,24 +69,16 @@ func parseHeading1(heading *ast.Heading) *Spec {
 	for _, n := range heading.Children {
 		if t, ok := n.(*ast.Text); ok {
 			if l := string(t.Literal); l != "" {
-				s.Name = l
+				return l
 			}
-			continue
-		}
-
-		if h, ok := n.(*ast.Heading); ok && h.Level == 2 {
-			c := parseHeading2(h)
-			s.Categories = append(s.Categories, c)
 			continue
 		}
 	}
 
-	return s
+	return ""
 }
 
-func parseHeading2(heading *ast.Heading) *Category {
-	c := &Category{}
-
+func parseHeading2(heading *ast.Heading) string {
 	if heading.Level != 2 {
 		panic(fmt.Sprintf("Heading level is not 2, heading level: %d", heading.Level))
 	}
@@ -82,24 +86,16 @@ func parseHeading2(heading *ast.Heading) *Category {
 	for _, n := range heading.Children {
 		if t, ok := n.(*ast.Text); ok {
 			if l := string(t.Literal); l != "" {
-				c.Name = l
+				return l
 			}
-			continue
-		}
-
-		if h, ok := n.(*ast.Heading); ok && h.Level == 3 {
-			sc := parseHeading3(h)
-			c.SubCategories = append(c.SubCategories, sc)
 			continue
 		}
 	}
 
-	return c
+	return ""
 }
 
-func parseHeading3(heading *ast.Heading) *SubCategory {
-	sc := &SubCategory{}
-
+func parseHeading3(heading *ast.Heading) string {
 	if heading.Level != 3 {
 		panic(fmt.Sprintf("Heading level is not 3, heading level: %d", heading.Level))
 	}
@@ -107,24 +103,16 @@ func parseHeading3(heading *ast.Heading) *SubCategory {
 	for _, n := range heading.Children {
 		if t, ok := n.(*ast.Text); ok {
 			if l := string(t.Literal); l != "" {
-				sc.Name = l
+				return l
 			}
-			continue
-		}
-
-		if h, ok := n.(*ast.Heading); ok && h.Level == 3 {
-			ssc := parseHeading4(h)
-			sc.SubSubCategories = append(sc.SubSubCategories, ssc)
 			continue
 		}
 	}
 
-	return sc
+	return ""
 }
 
-func parseHeading4(heading *ast.Heading) *SubSubCategory {
-	ssc := &SubSubCategory{}
-
+func parseHeading4(heading *ast.Heading) string {
 	if heading.Level != 4 {
 		panic(fmt.Sprintf("Heading level is not 4, heading level: %d", heading.Level))
 	}
@@ -132,13 +120,13 @@ func parseHeading4(heading *ast.Heading) *SubSubCategory {
 	for _, n := range heading.Children {
 		if t, ok := n.(*ast.Text); ok {
 			if l := string(t.Literal); l != "" {
-				ssc.Name = l
+				return l
 			}
 			continue
 		}
 	}
 
-	return ssc
+	return ""
 }
 
 func parseOrderdList(list *ast.List) []string {

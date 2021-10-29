@@ -14,9 +14,9 @@ func TestParseHeading1(t *testing.T) {
 	p := parser.New()
 	n := p.Parse([]byte(input)).GetChildren()[0]
 	if h, ok := n.(*ast.Heading); ok {
-		s := parseHeading1(h)
-		if s.Name != "Spec" {
-			t.Errorf("s.Name = %v, want %v", s.Name, "Spec")
+		h1 := parseHeading1(h)
+		if h1 != "Spec" {
+			t.Errorf("h1 = %v, want %v", h1, "Spec")
 		}
 	} else {
 		t.Errorf("ok = %v, want %v", ok, true)
@@ -30,9 +30,9 @@ func TestParseHeading2(t *testing.T) {
 	p := parser.New()
 	n := p.Parse([]byte(input)).GetChildren()[0]
 	if h, ok := n.(*ast.Heading); ok {
-		c := parseHeading2(h)
-		if c.Name != "Category" {
-			t.Errorf("c.Name = %v, want %v", c.Name, "Category")
+		h2 := parseHeading2(h)
+		if h2 != "Category" {
+			t.Errorf("h2 = %v, want %v", h2, "Category")
 		}
 	} else {
 		t.Errorf("ok = %v, want %v", ok, true)
@@ -40,13 +40,15 @@ func TestParseHeading2(t *testing.T) {
 }
 
 func TestParseHeading3(t *testing.T) {
-	input := "### SubCategory"
+	input := `
+### SubCategory
+`
 	p := parser.New()
 	n := p.Parse([]byte(input)).GetChildren()[0]
 	if h, ok := n.(*ast.Heading); ok {
-		sc := parseHeading3(h)
-		if sc.Name != "SubCategory" {
-			t.Errorf("sc.Name = %v, want %v", sc.Name, "SubCategory")
+		h3 := parseHeading3(h)
+		if h3 != "SubCategory" {
+			t.Errorf("h3 = %v, want %v", h3, "SubCategory")
 		}
 	} else {
 		t.Errorf("ok = %v, want %v", ok, true)
@@ -60,9 +62,9 @@ func TestParseHeading4(t *testing.T) {
 	p := parser.New()
 	n := p.Parse([]byte(input)).GetChildren()[0]
 	if h, ok := n.(*ast.Heading); ok {
-		ssc := parseHeading4(h)
-		if ssc.Name != "SubSubCategory" {
-			t.Errorf("ssc.Name = %v, want %v", ssc.Name, "SubSubCategory")
+		h4 := parseHeading4(h)
+		if h4 != "SubSubCategory" {
+			t.Errorf("h4 = %v, want %v", h4, "SubSubCategory")
 		}
 	} else {
 		t.Errorf("ok = %v, want %v", ok, true)
