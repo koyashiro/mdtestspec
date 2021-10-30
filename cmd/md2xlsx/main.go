@@ -17,13 +17,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	if len(os.Args) == 2 {
-		fmt.Println("output path required")
-		os.Exit(1)
-	}
-
 	input := os.Args[1]
-	output := os.Args[2]
+	output := "output.xlsx"
 
 	data, err := readData(input)
 	if err != nil {
