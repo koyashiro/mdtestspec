@@ -14,7 +14,7 @@ md2xlsx INPUT OUTPUT
 
 ## Example
 
-example spec file is [here.md](https://github.com/koyashiro/md2xlsx/blob/main/example/spec.md)
+example spec file is [here.md](https://github.com/koyashiro/md2xlsx/blob/develop/example/spec.md)
 
 ```sh
 md2xlsx spec.md output.xlsx
