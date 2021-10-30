@@ -73,7 +73,7 @@ func ParseSpec(input []byte) (*spec.Spec, error) {
 				if len(ssc.Confirmations) != 0 {
 					return nil, errors.New("unexpected list element")
 				}
-				ssc.Confirmations, ssc.Remarks = parseCheckListAndUnorderdList(l)
+				ssc.Confirmations, ssc.Remarks = parseCheckListAndUnorderedList(l)
 			case 17:
 				if len(s.Categories) == 0 {
 					return nil, errors.New("unexpected list element")
@@ -166,7 +166,7 @@ func parseUnorderedList(list *ast.List) []string {
 	return result
 }
 
-func parseCheckListAndUnorderdList(list *ast.List) (checkList []string, unorderedList []string) {
+func parseCheckListAndUnorderedList(list *ast.List) (checkList []string, unorderedList []string) {
 	checkList = make([]string, 0)
 	unorderedList = make([]string, 0)
 	for _, n := range list.Children {
