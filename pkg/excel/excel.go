@@ -24,6 +24,12 @@ const SubSubCategoryWidth = 30.
 const ProcedureWidth = 70.
 const ConfirmationWidth = 70.
 
+const CategoryHeader = "Category"
+const SubCategoryHeader = "Sub-category"
+const SubSubCategoryHeader = "Sub-sub-category"
+const ProcedureHeader = "Procedure"
+const ConfirmatinHeader = "Confirmation"
+
 type Book struct {
 	file *excelize.File
 }
@@ -69,6 +75,10 @@ func (b *Book) WriteSpec(spec *spec.Spec) error {
 	}
 
 	if err := setCelsWidth(b.file, sheet); err != nil {
+		return err
+	}
+
+	if err := setHeaders(b.file, sheet); err != nil {
 		return err
 	}
 
@@ -133,6 +143,31 @@ func setCelsWidth(f *excelize.File, sheet string) error {
 		return err
 	}
 	if err := f.SetColWidth(sheet, ConfirmationsCol, ConfirmationsCol, ConfirmationWidth); err != nil {
+		return err
+	}
+	return nil
+}
+
+func setHeaders(f *excelize.File, sheet string) error {
+	const headerRow = 1
+	axis := fmt.Sprintf("%s%d", CategoryCol, headerRow)
+	if err := f.SetCellStr(sheet, axis, CategoryHeader); err != nil {
+		return err
+	}
+	axis = fmt.Sprintf("%s%d", SubCategoryCol, headerRow)
+	if err := f.SetCellStr(sheet, axis, SubCategoryHeader); err != nil {
+		return err
+	}
+	axis = fmt.Sprintf("%s%d", SubSubCategoryCol, headerRow)
+	if err := f.SetCellStr(sheet, axis, SubSubCategoryHeader); err != nil {
+		return err
+	}
+	axis = fmt.Sprintf("%s%d", ProceduresCol, headerRow)
+	if err := f.SetCellStr(sheet, axis, ProcedureHeader); err != nil {
+		return err
+	}
+	axis = fmt.Sprintf("%s%d", ConfirmationsCol, headerRow)
+	if err := f.SetCellStr(sheet, axis, ProcedureHeader); err != nil {
 		return err
 	}
 	return nil
