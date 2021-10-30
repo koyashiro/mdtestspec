@@ -32,8 +32,7 @@ func TestParse(t *testing.T) {
 #### Sub Sub Category 2-3-4
 `)
 
-	md := ParseMarkdown(input)
-	s := md.AsSpec()
+	s := ParseSpec(input)
 
 	if s.Name != "Spec" {
 		t.Errorf("s.Name = %v, want %v", s.Name, "Spec")

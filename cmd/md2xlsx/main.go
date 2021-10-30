@@ -31,8 +31,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	md := parser.ParseMarkdown(data)
-	s := md.AsSpec()
+	s := parser.ParseSpec(data)
 
 	b := excel.NewBook()
 	b.WriteSpec(s)

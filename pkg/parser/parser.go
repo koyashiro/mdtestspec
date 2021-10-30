@@ -10,13 +10,16 @@ import (
 	"github.com/koyashiro/md2xlsx/pkg/spec"
 )
 
-type Markdown struct {
-	doc *ast.Document
-}
+func ParseSpec(input []byte) *spec.Spec {
+	p := parser.New()
+	n := p.Parse(input)
+	doc, ok := n.(*ast.Document)
+	if !ok {
+		panic("invalid node")
+	}
 
-func (m *Markdown) AsSpec() *spec.Spec {
 	s := &spec.Spec{}
-	for _, n := range m.doc.Children {
+	for _, n := range doc.Children {
 		if heading, ok := n.(*ast.Heading); ok {
 			switch heading.Level {
 			case 1:
@@ -42,26 +45,16 @@ func (m *Markdown) AsSpec() *spec.Spec {
 			}
 		}
 	}
+
 	return s
 }
 
-func ParseMarkdown(input []byte) *Markdown {
-	p := parser.New()
-	n := p.Parse(input)
-	doc, ok := n.(*ast.Document)
-	if !ok {
-		panic("invalid node")
-	}
-
-	return &Markdown{doc: doc}
-}
-
-func OpenMarkdown(filename string) (*Markdown, error) {
+func OpenSpec(filename string) (*spec.Spec, error) {
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
-	return ParseMarkdown(data), nil
+	return ParseSpec(data), nil
 }
 
 func parseHeading(heading *ast.Heading) string {
