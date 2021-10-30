@@ -20,6 +20,7 @@ type Book struct {
 
 func NewBook() *Book {
 	f := excelize.NewFile()
+	f.DeleteSheet("sheet1")
 	return &Book{file: f}
 }
 
@@ -35,7 +36,11 @@ func (b *Book) SaveAs(name string) error {
 	return b.file.SaveAs(name)
 }
 
-func (b *Book) WriteSpec(spec *Spec, sheet string) {
+func (b *Book) WriteSpec(spec *Spec) {
+	sheet := spec.Name
+	b.file.NewSheet(spec.Name)
+	b.file.DeleteSheet("sheet1")
+
 	sb := strings.Builder{}
 	i := 2
 
