@@ -174,7 +174,33 @@ func setHeaders(f *excelize.File, sheet string) error {
 		return err
 	}
 
-	styleID, err := f.NewStyle(`{ "alignment": { "horizontal": "center", "vertical": "center" } }`)
+	styleID, err := f.NewStyle(`{
+		"border": [
+			{
+				"type": "top",
+				"color": "#5B9BD5",
+				"style": 2
+			},
+			{
+				"type": "right",
+				"color": "#5B9BD5",
+				"style": 2
+			},
+			{
+				"type": "bottom",
+				"color": "#5B9BD5",
+				"style": 2
+			},
+		    {
+				"type": "left",
+				"color": "#5B9BD5",
+				"style": 2
+			}
+		],
+		"fill": { "type": "pattern", "pattern": 1, "color": ["#5B9BD5", "#5B9BD5"] },
+		"font": { "color": "#FFFFFF" },
+		"alignment": { "horizontal": "center", "vertical": "center" }
+	}`)
 	if err != nil {
 		return err
 	}
@@ -183,7 +209,31 @@ func setHeaders(f *excelize.File, sheet string) error {
 
 func setCellStyle(f *excelize.File, sheet string, rowTo int) error {
 	const rowFrom = 2
-	styleID, err := f.NewStyle(`{ "alignment": { "horizontal": "left", "vertical": "top", "wrap_text": true } }`)
+	styleID, err := f.NewStyle(`{
+		"border": [
+			{
+				"type": "top",
+				"color": "#5B9BD5",
+				"style": 2
+			},
+			{
+				"type": "right",
+				"color": "#5B9BD5",
+				"style": 2
+			},
+			{
+				"type": "bottom",
+				"color": "#5B9BD5",
+				"style": 2
+			},
+		    {
+				"type": "left",
+				"color": "#5B9BD5",
+				"style": 2
+			}
+		],
+		"alignment": { "horizontal": "left", "vertical": "top", "wrap_text": true }
+	}`)
 	if err != nil {
 		return err
 	}
