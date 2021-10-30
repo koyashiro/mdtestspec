@@ -42,10 +42,13 @@ func ParseSpec(input []byte) (*spec.Spec, error) {
 				sc := &spec.SubCategory{Name: parseHeading(heading)}
 				c.SubCategories = append(c.SubCategories, sc)
 			case 4:
-				if len(s.Categories) == 0 || len(s.Categories[len(s.Categories)-1].SubCategories) == 0 {
+				if len(s.Categories) == 0 {
 					return nil, errors.New("unexpected h4 element")
 				}
 				c := s.Categories[len(s.Categories)-1]
+				if len(c.SubCategories) == 0 {
+					return nil, errors.New("unexpected h4 element")
+				}
 				sc := c.SubCategories[len(c.SubCategories)-1]
 				ssc := &spec.SubSubCategory{Name: parseHeading(heading)}
 				sc.SubSubCategories = append(sc.SubSubCategories, ssc)
