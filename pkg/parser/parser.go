@@ -57,6 +57,23 @@ func ParseSpec(input []byte) (*spec.Spec, error) {
 
 		if l, ok := n.(*ast.List); ok {
 			switch l.ListFlags {
+			case 16:
+				if len(s.Categories) == 0 {
+					return nil, errors.New("unexpected list element")
+				}
+				c := s.Categories[len(s.Categories)-1]
+				if len(c.SubCategories) == 0 {
+					return nil, errors.New("unexpected list element")
+				}
+				sc := c.SubCategories[len(c.SubCategories)-1]
+				if len(sc.SubSubCategories) == 0 {
+					return nil, errors.New("unexpected list element")
+				}
+				ssc := sc.SubSubCategories[len(sc.SubSubCategories)-1]
+				if len(ssc.Confirmations) != 0 {
+					return nil, errors.New("unexpected list element")
+				}
+				ssc.Confirmations = parseCheckList(l)
 			case 17:
 				if len(s.Categories) == 0 {
 					return nil, errors.New("unexpected list element")

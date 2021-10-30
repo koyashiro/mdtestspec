@@ -19,10 +19,15 @@ func TestParse(t *testing.T) {
 
 1. Procedure 1-1-1-1
 
+- [ ] Confirmation 1-1-1-1
+
 #### Sub Sub Category 1-1-2
 
 1. Procedure 1-1-2-1
 2. Procedure 1-1-2-2
+
+- [ ] Confirmation 1-1-2-1
+- [ ] Confirmation 1-1-2-2
 
 #### Sub Sub Category 1-1-3
 
@@ -30,16 +35,25 @@ func TestParse(t *testing.T) {
 2. Procedure 1-1-3-2
 3. Procedure 1-1-3-3
 
+- [ ] Confirmation 1-1-3-1
+- [ ] Confirmation 1-1-3-2
+- [ ] Confirmation 1-1-3-3
+
 ### Sub Category 1-2
 
 #### Sub Sub Category 1-2-1
 
 1. Procedure 1-2-1-1
 
+- [ ] Confirmation 1-2-1-1
+
 #### Sub Sub Category 1-2-2
 
 1. Procedure 1-2-2-1
 2. Procedure 1-2-2-2
+
+- [ ] Confirmation 1-2-2-1
+- [ ] Confirmation 1-2-2-1
 
 ## Category 2
 
@@ -49,10 +63,15 @@ func TestParse(t *testing.T) {
 
 1. Procedure 2-1-1-1
 
+- [ ] Confirmation 2-1-1-1
+
 #### Sub Sub Category 2-1-2
 
 1. Procedure 2-1-2-1
 2. Procedure 2-1-2-2
+
+- [ ] Confirmation 2-1-2-1
+- [ ] Confirmation 2-1-2-2
 
 #### Sub Sub Category 2-1-3
 
@@ -60,11 +79,17 @@ func TestParse(t *testing.T) {
 2. Procedure 2-1-3-2
 3. Procedure 2-1-3-3
 
+- [ ] Confirmation 2-1-3-1
+- [ ] Confirmation 2-1-3-2
+- [ ] Confirmation 2-1-3-3
+
 ### Sub Category 2-2
 
 #### Sub Sub Category 2-2-1
 
 1. Procedure 2-2-1-1
+
+- [ ] Confirmation 2-2-1-1
 
 ### Sub Category 2-3
 
@@ -72,10 +97,15 @@ func TestParse(t *testing.T) {
 
 1. Procedure 2-3-1-1
 
+- [ ] Confirmation 2-3-1-1
+
 #### Sub Sub Category 2-3-2
 
 1. Procedure 2-3-2-1
 2. Procedure 2-3-2-2
+
+- [ ] Confirmation 2-3-2-1
+- [ ] Confirmation 2-3-2-2
 
 #### Sub Sub Category 2-3-3
 
@@ -83,12 +113,21 @@ func TestParse(t *testing.T) {
 2. Procedure 2-3-3-2
 3. Procedure 2-3-3-3
 
+- [ ] Confirmation 2-3-3-1
+- [ ] Confirmation 2-3-3-2
+- [ ] Confirmation 2-3-3-3
+
 #### Sub Sub Category 2-3-4
 
 1. Procedure 2-3-4-1
 2. Procedure 2-3-4-2
 3. Procedure 2-3-4-3
 4. Procedure 2-3-4-4
+
+- [ ] Confirmation 2-3-4-1
+- [ ] Confirmation 2-3-4-2
+- [ ] Confirmation 2-3-4-3
+- [ ] Confirmation 2-3-4-4
 `)
 
 	s, err := ParseSpec(input)
@@ -130,11 +169,20 @@ func TestParse(t *testing.T) {
 	if len(ssc.Procedures) != 1 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 1)
 	}
+	if len(ssc.Confirmations) != 1 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 1)
+	}
 
 	// Procedure 1-1-1-1
 	p := ssc.Procedures[0]
 	if p != "Procedure 1-1-1-1" {
 		t.Errorf("p = %v, want %v", p, "Procedure 1-1-1-1")
+	}
+
+	// Confirmation 1-1-1-1
+	cn := ssc.Confirmations[0]
+	if cn != "Confirmation 1-1-1-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 1-1-1-1")
 	}
 
 	// Sub Sub Category 1-1-2
@@ -144,6 +192,9 @@ func TestParse(t *testing.T) {
 	}
 	if len(ssc.Procedures) != 2 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 2)
+	}
+	if len(ssc.Confirmations) != 2 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 2)
 	}
 
 	// Procedure 1-1-2-1
@@ -158,6 +209,18 @@ func TestParse(t *testing.T) {
 		t.Errorf("p = %v, want %v", p, "Procedure 1-1-2-2")
 	}
 
+	// Confirmation 1-1-2-1
+	cn = ssc.Confirmations[0]
+	if cn != "Confirmation 1-1-2-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 1-1-2-1")
+	}
+
+	// Confirmation 1-1-2-2
+	cn = ssc.Confirmations[1]
+	if cn != "Confirmation 1-1-2-2" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 1-1-2-2")
+	}
+
 	// Sub Sub Category 1-1-3
 	ssc = sc.SubSubCategories[2]
 	if ssc.Name != "Sub Sub Category 1-1-3" {
@@ -165,6 +228,9 @@ func TestParse(t *testing.T) {
 	}
 	if len(ssc.Procedures) != 3 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 3)
+	}
+	if len(ssc.Confirmations) != 3 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 3)
 	}
 
 	// Procedure 1-1-3-1
@@ -185,6 +251,24 @@ func TestParse(t *testing.T) {
 		t.Errorf("p = %v, want %v", p, "Procedure 1-1-3-3")
 	}
 
+	// Confirmation 1-1-3-1
+	cn = ssc.Confirmations[0]
+	if cn != "Confirmation 1-1-3-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 1-1-3-1")
+	}
+
+	// Confirmation 1-1-3-2
+	cn = ssc.Confirmations[1]
+	if cn != "Confirmation 1-1-3-2" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 1-1-3-2")
+	}
+
+	// Confirmation 1-1-3-3
+	cn = ssc.Confirmations[2]
+	if cn != "Confirmation 1-1-3-3" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 1-1-3-3")
+	}
+
 	// Sub Category 1-2
 	sc = c.SubCategories[1]
 	if sc.Name != "Sub Category 1-2" {
@@ -202,11 +286,20 @@ func TestParse(t *testing.T) {
 	if len(ssc.Procedures) != 1 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 1)
 	}
+	if len(ssc.Confirmations) != 1 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 1)
+	}
 
 	// Procedure 1-2-1-1
 	p = ssc.Procedures[0]
 	if p != "Procedure 1-2-1-1" {
 		t.Errorf("p = %v, want %v", p, "Procedure 1-2-1-1")
+	}
+
+	// Confirmation 1-2-1-1
+	cn = ssc.Confirmations[0]
+	if cn != "Confirmation 1-2-1-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 1-2-1-1")
 	}
 
 	// Sub Sub Category 1-2-2
@@ -217,11 +310,20 @@ func TestParse(t *testing.T) {
 	if len(ssc.Procedures) != 2 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 2)
 	}
+	if len(ssc.Confirmations) != 2 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 2)
+	}
 
 	// Procedure 1-2-2-1
 	p = ssc.Procedures[0]
 	if p != "Procedure 1-2-2-1" {
 		t.Errorf("p = %v, want %v", p, "Procedure 1-2-2-1")
+	}
+
+	// Confirmation 1-2-2-1
+	cn = ssc.Confirmations[0]
+	if cn != "Confirmation 1-2-2-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 1-2-2-1")
 	}
 
 	// Category 2
@@ -250,11 +352,20 @@ func TestParse(t *testing.T) {
 	if len(ssc.Procedures) != 1 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 1)
 	}
+	if len(ssc.Confirmations) != 1 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 1)
+	}
 
 	// Procedure 2-1-1-1
 	p = ssc.Procedures[0]
 	if p != "Procedure 2-1-1-1" {
 		t.Errorf("p = %v, want %v", p, "Procedure 2-1-1-1")
+	}
+
+	// Confirmation 2-1-1-1
+	cn = ssc.Confirmations[0]
+	if cn != "Confirmation 2-1-1-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-1-1-1")
 	}
 
 	// Sub Sub Category 2-1-2
@@ -264,6 +375,9 @@ func TestParse(t *testing.T) {
 	}
 	if len(ssc.Procedures) != 2 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 2)
+	}
+	if len(ssc.Confirmations) != 2 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 2)
 	}
 
 	// Procedure 2-1-2-1
@@ -278,6 +392,18 @@ func TestParse(t *testing.T) {
 		t.Errorf("p = %v, want %v", p, "Procedure 2-1-2-2")
 	}
 
+	// Confirmation 2-1-2-1
+	cn = ssc.Confirmations[0]
+	if cn != "Confirmation 2-1-2-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-1-2-1")
+	}
+
+	// Confirmation 2-1-2-2
+	cn = ssc.Confirmations[1]
+	if cn != "Confirmation 2-1-2-2" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-1-2-2")
+	}
+
 	// Sub Sub Category 2-1-3
 	ssc = sc.SubSubCategories[2]
 	if ssc.Name != "Sub Sub Category 2-1-3" {
@@ -285,6 +411,9 @@ func TestParse(t *testing.T) {
 	}
 	if len(ssc.Procedures) != 3 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 3)
+	}
+	if len(ssc.Confirmations) != 3 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 3)
 	}
 
 	// Procedure 2-1-3-1
@@ -305,6 +434,24 @@ func TestParse(t *testing.T) {
 		t.Errorf("p = %v, want %v", p, "Procedure 2-1-3-3")
 	}
 
+	// Confirmation 2-1-3-1
+	cn = ssc.Confirmations[0]
+	if cn != "Confirmation 2-1-3-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-1-3-1")
+	}
+
+	// Confirmation 2-1-3-2
+	cn = ssc.Confirmations[1]
+	if cn != "Confirmation 2-1-3-2" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-1-3-2")
+	}
+
+	// Confirmation 2-1-3-3
+	cn = ssc.Confirmations[2]
+	if cn != "Confirmation 2-1-3-3" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-1-3-2")
+	}
+
 	// Sub Category 2-2
 	sc = c.SubCategories[1]
 	if sc.Name != "Sub Category 2-2" {
@@ -322,11 +469,20 @@ func TestParse(t *testing.T) {
 	if len(ssc.Procedures) != 1 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 1)
 	}
+	if len(ssc.Confirmations) != 1 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 1)
+	}
 
 	// Procedure 2-2-1-1
 	p = ssc.Procedures[0]
 	if p != "Procedure 2-2-1-1" {
 		t.Errorf("p = %v, want %v", p, "Procedure 2-2-1-1")
+	}
+
+	// Confirmation 2-2-1-1
+	cn = ssc.Confirmations[0]
+	if cn != "Confirmation 2-2-1-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-2-1-1")
 	}
 
 	// Sub Category 2-3
@@ -346,11 +502,20 @@ func TestParse(t *testing.T) {
 	if len(ssc.Procedures) != 1 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 1)
 	}
+	if len(ssc.Confirmations) != 1 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 1)
+	}
 
 	// Procedure 2-3-1-1
 	p = ssc.Procedures[0]
 	if p != "Procedure 2-3-1-1" {
 		t.Errorf("p = %v, want %v", p, "Procedure 2-3-1-1")
+	}
+
+	// Confirmation 2-3-1-1
+	cn = ssc.Confirmations[0]
+	if cn != "Confirmation 2-3-1-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-3-1-1")
 	}
 
 	// Sub Sub Category 2-3-2
@@ -360,6 +525,9 @@ func TestParse(t *testing.T) {
 	}
 	if len(ssc.Procedures) != 2 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 2)
+	}
+	if len(ssc.Confirmations) != 2 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 2)
 	}
 
 	// Procedure 2-3-2-1
@@ -374,6 +542,18 @@ func TestParse(t *testing.T) {
 		t.Errorf("p = %v, want %v", p, "Procedure 2-3-2-2")
 	}
 
+	// Confirmation 2-3-2-1
+	cn = ssc.Confirmations[0]
+	if cn != "Confirmation 2-3-2-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-3-2-1")
+	}
+
+	// Confirmation 2-3-2-2
+	cn = ssc.Confirmations[1]
+	if cn != "Confirmation 2-3-2-2" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-3-2-2")
+	}
+
 	// Sub Sub Category 2-3-3
 	ssc = sc.SubSubCategories[2]
 	if ssc.Name != "Sub Sub Category 2-3-3" {
@@ -381,6 +561,9 @@ func TestParse(t *testing.T) {
 	}
 	if len(ssc.Procedures) != 3 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 3)
+	}
+	if len(ssc.Confirmations) != 3 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 3)
 	}
 
 	// Procedure 2-3-3-1
@@ -401,6 +584,24 @@ func TestParse(t *testing.T) {
 		t.Errorf("p = %v, want %v", p, "Procedure 2-3-3-3")
 	}
 
+	// Confirmation 2-3-3-1
+	cn = ssc.Confirmations[0]
+	if cn != "Confirmation 2-3-3-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-3-3-1")
+	}
+
+	// Confirmation 2-3-3-2
+	cn = ssc.Confirmations[1]
+	if cn != "Confirmation 2-3-3-2" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-3-3-2")
+	}
+
+	// Confirmation 2-3-3-3
+	cn = ssc.Confirmations[2]
+	if cn != "Confirmation 2-3-3-3" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-3-3-3")
+	}
+
 	// Sub Sub Category 2-3-4
 	ssc = sc.SubSubCategories[3]
 	if ssc.Name != "Sub Sub Category 2-3-4" {
@@ -408,6 +609,9 @@ func TestParse(t *testing.T) {
 	}
 	if len(ssc.Procedures) != 4 {
 		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 4)
+	}
+	if len(ssc.Confirmations) != 4 {
+		t.Errorf("len(ssc.Confirmations) = %v, want %v", len(ssc.Confirmations), 4)
 	}
 
 	// Procedure 2-3-4-1
@@ -432,6 +636,30 @@ func TestParse(t *testing.T) {
 	p = ssc.Procedures[3]
 	if p != "Procedure 2-3-4-4" {
 		t.Errorf("p = %v, want %v", p, "Procedure 2-3-4-4")
+	}
+
+	// Confirmation 2-3-4-1
+	cn = ssc.Confirmations[0]
+	if cn != "Confirmation 2-3-4-1" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-3-4-1")
+	}
+
+	// Confirmation 2-3-4-2
+	cn = ssc.Confirmations[1]
+	if cn != "Confirmation 2-3-4-2" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-3-4-2")
+	}
+
+	// Confirmation 2-3-4-3
+	cn = ssc.Confirmations[2]
+	if cn != "Confirmation 2-3-4-3" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-3-4-3")
+	}
+
+	// Confirmation 2-3-4-4
+	cn = ssc.Confirmations[3]
+	if cn != "Confirmation 2-3-4-4" {
+		t.Errorf("cn = %v, want %v", p, "Confirmation 2-3-4-4")
 	}
 }
 
