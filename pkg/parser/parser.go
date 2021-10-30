@@ -142,30 +142,6 @@ func parseOrderedList(list *ast.List) []string {
 	return result
 }
 
-func parseUnorderedList(list *ast.List) []string {
-	result := make([]string, 0)
-	for _, n := range list.Children {
-		if li, ok := n.(*ast.ListItem); ok {
-			for _, n := range li.Children {
-				if p, ok := n.(*ast.Paragraph); ok {
-					for _, n := range p.Children {
-						if t, ok := n.(*ast.Text); ok {
-							if l := string(t.Literal); l != "" {
-								result = append(result, l)
-								continue
-							}
-						}
-						continue
-					}
-				}
-				continue
-			}
-			continue
-		}
-	}
-	return result
-}
-
 func parseCheckListAndUnorderedList(list *ast.List) (checkList []string, unorderedList []string) {
 	checkList = make([]string, 0)
 	unorderedList = make([]string, 0)
