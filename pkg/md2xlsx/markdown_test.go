@@ -32,8 +32,7 @@ func TestParse(t *testing.T) {
 #### Sub Sub Category 2-3-4
 `)
 
-	p := NewMarkdownParser()
-	md := p.Parse(input)
+	md := ParseMarkdown(input)
 	s := md.AsSpec()
 
 	if s.Name != "Spec" {
