@@ -757,16 +757,19 @@ func TestParseOrderedList(t *testing.T) {
 	}
 }
 
-func TestParseCheckList(t *testing.T) {
+func TestParseCheckListAndUnorder(t *testing.T) {
 	input := `
 - [ ] Confirmation 1
 - [ ] Confirmation 2
 - [ ] Confirmation 3
+
+- Remarks 1
+- Remarks 2
 `
 	p := parser.New()
 	n := p.Parse([]byte(input)).GetChildren()[0]
 	if l, ok := n.(*ast.List); ok {
-		c := parseCheckList(l)
+		c, r := parseCheckListAndUnorderedList(l)
 		if len(c) != 3 {
 			t.Errorf("len(c) = %v, want %v", len(c), 3)
 		}
@@ -781,6 +784,18 @@ func TestParseCheckList(t *testing.T) {
 
 		if c[2] != "Confirmation 3" {
 			t.Errorf("c[2] = %v, want %v", c[1], "Confirmation 3")
+		}
+
+		if len(r) != 2 {
+			t.Errorf("len(r) = %v, want %v", len(r), 2)
+		}
+
+		if r[0] != "Remarks 1" {
+			t.Errorf("r[0] = %v, want %v", r[0], "Remarks 1")
+		}
+
+		if r[1] != "Remarks 2" {
+			t.Errorf("r[1] = %v, want %v", r[1], "Remarks 2")
 		}
 	} else {
 		t.Errorf("ok = %v, want %v", ok, true)
