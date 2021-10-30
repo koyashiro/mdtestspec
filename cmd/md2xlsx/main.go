@@ -38,7 +38,10 @@ func main() {
 	}
 
 	b := excel.NewBook()
-	b.WriteSpec(s)
+	if err := b.WriteSpec(s); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	if err := b.SaveAs(output); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

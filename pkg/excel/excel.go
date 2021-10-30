@@ -54,7 +54,7 @@ func (b *Book) WriteToBuffer() (*bytes.Buffer, error) {
 	return b.file.WriteToBuffer()
 }
 
-func (b *Book) WriteSpec(spec *spec.Spec) {
+func (b *Book) WriteSpec(spec *spec.Spec) error {
 	var sheet string
 	if spec.Name == "" {
 		sheet = "no title"
@@ -64,59 +64,92 @@ func (b *Book) WriteSpec(spec *spec.Spec) {
 	b.file.NewSheet(sheet)
 	b.file.DeleteSheet("sheet1")
 
-	b.file.SetColWidth(sheet, CategoryCol, CategoryCol, CategoryWidth)
-	b.file.SetColWidth(sheet, SubCategoryCol, CategoryCol, SubCategoryWidth)
-	b.file.SetColWidth(sheet, SubSubCategoryCol, CategoryCol, SubSubCategoryWidth)
-	b.file.SetColWidth(sheet, ProceduresCol, ProceduresCol, ProcedureWidth)
-	b.file.SetColWidth(sheet, ConfirmationsCol, ConfirmationsCol, ConfirmationWidth)
+	if err := setCelsWidth(b.file, sheet); err != nil {
+		return err
+	}
 
 	sb := strings.Builder{}
 	i := 2
 
 	for _, c := range spec.Categories {
-		setCategory(b.file, sheet, i, c.Name)
+		if err := setCategory(b.file, sheet, i, c.Name); err != nil {
+			return err
+		}
 
 		from := i
 		for _, sc := range c.SubCategories {
-			setSubCategory(b.file, sheet, i, sc.Name)
+			if err := setSubCategory(b.file, sheet, i, sc.Name); err != nil {
+				return err
+			}
 
 			from := i
 			for _, ssc := range sc.SubSubCategories {
-				setSubSubCategory(b.file, sheet, i, ssc.Name)
-				setConfirmations(b.file, sheet, i, ssc.Confirmations, &sb)
-				setProcedures(b.file, sheet, i, ssc.Procedures, &sb)
+				if err := setSubSubCategory(b.file, sheet, i, ssc.Name); err != nil {
+					return err
+				}
+				if err := setConfirmations(b.file, sheet, i, ssc.Confirmations, &sb); err != nil {
+					return err
+				}
+				if err := setProcedures(b.file, sheet, i, ssc.Procedures, &sb); err != nil {
+					return err
+				}
 				i++
 			}
 			to := i - 1
 
 			hcell := fmt.Sprintf("%s%d", SubCategoryCol, from)
 			vcell := fmt.Sprintf("%s%d", SubCategoryCol, to)
-			b.file.MergeCell(sheet, hcell, vcell)
+			if err := b.file.MergeCell(sheet, hcell, vcell); err != nil {
+				return err
+			}
 		}
 		to := i - 1
 
 		hcell := fmt.Sprintf("%s%d", CategoryCol, from)
 		vcell := fmt.Sprintf("%s%d", CategoryCol, to)
-		b.file.MergeCell(sheet, hcell, vcell)
+		if err := b.file.MergeCell(sheet, hcell, vcell); err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
-func setCategory(f *excelize.File, sheet string, row int, name string) {
+func setCelsWidth(f *excelize.File, sheet string) error {
+	if err := f.SetColWidth(sheet, CategoryCol, CategoryCol, CategoryWidth); err != nil {
+		return err
+	}
+	if err := f.SetColWidth(sheet, SubCategoryCol, SubCategoryCol, SubCategoryWidth); err != nil {
+		return err
+	}
+	if err := f.SetColWidth(sheet, SubSubCategoryCol, SubSubCategoryCol, SubSubCategoryWidth); err != nil {
+		return err
+	}
+	if err := f.SetColWidth(sheet, ProceduresCol, ProceduresCol, ProcedureWidth); err != nil {
+		return err
+	}
+	if err := f.SetColWidth(sheet, ConfirmationsCol, ConfirmationsCol, ConfirmationWidth); err != nil {
+		return err
+	}
+	return nil
+}
+
+func setCategory(f *excelize.File, sheet string, row int, name string) error {
 	axis := fmt.Sprintf("%s%d", CategoryCol, row)
-	f.SetCellValue(sheet, axis, name)
+	return f.SetCellValue(sheet, axis, name)
 }
 
-func setSubCategory(f *excelize.File, sheet string, row int, name string) {
+func setSubCategory(f *excelize.File, sheet string, row int, name string) error {
 	axis := fmt.Sprintf("%s%d", SubCategoryCol, row)
-	f.SetCellValue(sheet, axis, name)
+	return f.SetCellValue(sheet, axis, name)
 }
 
-func setSubSubCategory(f *excelize.File, sheet string, row int, name string) {
+func setSubSubCategory(f *excelize.File, sheet string, row int, name string) error {
 	axis := fmt.Sprintf("%s%d", SubSubCategoryCol, row)
-	f.SetCellValue(sheet, axis, name)
+	return f.SetCellValue(sheet, axis, name)
 }
 
-func setProcedures(f *excelize.File, sheet string, row int, procedures []string, sb *strings.Builder) {
+func setProcedures(f *excelize.File, sheet string, row int, procedures []string, sb *strings.Builder) error {
 	sb.Reset()
 	axis := fmt.Sprintf("%s%d", ProceduresCol, row)
 	for j, p := range procedures {
@@ -126,10 +159,10 @@ func setProcedures(f *excelize.File, sheet string, row int, procedures []string,
 		sb.WriteString(fmt.Sprintf("%d. ", j+1))
 		sb.WriteString(p)
 	}
-	f.SetCellValue(sheet, axis, sb.String())
+	return f.SetCellValue(sheet, axis, sb.String())
 }
 
-func setConfirmations(f *excelize.File, sheet string, row int, confirmations []string, sb *strings.Builder) {
+func setConfirmations(f *excelize.File, sheet string, row int, confirmations []string, sb *strings.Builder) error {
 	sb.Reset()
 	axis := fmt.Sprintf("%s%d", ConfirmationsCol, row)
 	for j, p := range confirmations {
@@ -139,5 +172,5 @@ func setConfirmations(f *excelize.File, sheet string, row int, confirmations []s
 		sb.WriteRune(ConfirmationPrefix)
 		sb.WriteString(p)
 	}
-	f.SetCellValue(sheet, axis, sb.String())
+	return f.SetCellValue(sheet, axis, sb.String())
 }
