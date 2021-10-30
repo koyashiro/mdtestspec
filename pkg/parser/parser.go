@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 
@@ -10,7 +11,7 @@ import (
 	"github.com/koyashiro/md2xlsx/pkg/spec"
 )
 
-func ParseSpec(input []byte) *spec.Spec {
+func ParseSpec(input []byte) (*spec.Spec, error) {
 	p := parser.New()
 	n := p.Parse(input)
 	doc, ok := n.(*ast.Document)
@@ -23,20 +24,26 @@ func ParseSpec(input []byte) *spec.Spec {
 		if heading, ok := n.(*ast.Heading); ok {
 			switch heading.Level {
 			case 1:
+				if s.Name != "" {
+					return nil, errors.New("unexpected h1 element")
+				}
 				s.Name = parseHeading(heading)
 			case 2:
+				if s.Name == "" {
+					return nil, errors.New("unexpected h2 element")
+				}
 				c := &spec.Category{Name: parseHeading(heading)}
 				s.Categories = append(s.Categories, c)
 			case 3:
 				if len(s.Categories) == 0 {
-					panic("invalid markdown")
+					return nil, errors.New("unexpected h3 element")
 				}
 				c := s.Categories[len(s.Categories)-1]
 				sc := &spec.SubCategory{Name: parseHeading(heading)}
 				c.SubCategories = append(c.SubCategories, sc)
 			case 4:
 				if len(s.Categories) == 0 || len(s.Categories[len(s.Categories)-1].SubCategories) == 0 {
-					panic("invalid markdown")
+					return nil, errors.New("unexpected h4 element")
 				}
 				c := s.Categories[len(s.Categories)-1]
 				sc := c.SubCategories[len(c.SubCategories)-1]
@@ -46,7 +53,7 @@ func ParseSpec(input []byte) *spec.Spec {
 		}
 	}
 
-	return s
+	return s, nil
 }
 
 func OpenSpec(filename string) (*spec.Spec, error) {
@@ -54,7 +61,7 @@ func OpenSpec(filename string) (*spec.Spec, error) {
 	if err != nil {
 		return nil, err
 	}
-	return ParseSpec(data), nil
+	return ParseSpec(data)
 }
 
 func parseHeading(heading *ast.Heading) string {

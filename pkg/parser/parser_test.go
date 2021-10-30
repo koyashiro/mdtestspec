@@ -32,7 +32,10 @@ func TestParse(t *testing.T) {
 #### Sub Sub Category 2-3-4
 `)
 
-	s := ParseSpec(input)
+	s, err := ParseSpec(input)
+	if err != nil {
+		t.Errorf("err = %v, want %v", err, "nil")
+	}
 
 	if s.Name != "Spec" {
 		t.Errorf("s.Name = %v, want %v", s.Name, "Spec")
