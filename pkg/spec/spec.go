@@ -19,4 +19,5 @@ type SubSubCategory struct {
 	Name          string
 	Procedures    []string
 	Confirmations []string
+	Remarks       []string
 }

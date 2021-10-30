@@ -17,18 +17,25 @@ const SubSubCategoryCol = "C"
 const ProceduresCol = "D"
 const ConfirmationsCol = "E"
 const ConfirmationPrefix = '・'
+const RemarksCol = "F"
+const RemarksPrefix = '・'
+const ResultCol = "G"
 
-const CategoryWidth = 30.
-const SubCategoryWidth = 30.
-const SubSubCategoryWidth = 30.
-const ProcedureWidth = 70.
-const ConfirmationWidth = 70.
+const CategoryWidth = 20.
+const SubCategoryWidth = 25.
+const SubSubCategoryWidth = 25.
+const ProcedureWidth = 55.
+const ConfirmationWidth = 55.
+const RemarkWidth = 55.
+const ResultWidth = 10.
 
 const CategoryHeader = "Category"
 const SubCategoryHeader = "Sub-category"
 const SubSubCategoryHeader = "Sub-sub-category"
 const ProcedureHeader = "Procedure"
 const ConfirmatinHeader = "Confirmation"
+const RemarksHeader = "Remarks"
+const ResultHeader = "Result"
 
 type Book struct {
 	file *excelize.File
@@ -94,6 +101,9 @@ func CreateBook(spec *spec.Spec) (*Book, error) {
 				if err := setProcedures(file, sheet, row, ssc.Procedures, &sb); err != nil {
 					return nil, err
 				}
+				if err := setRemarks(file, sheet, row, ssc.Remarks, &sb); err != nil {
+					return nil, err
+				}
 			}
 			subCategoryTo := row
 
@@ -147,6 +157,12 @@ func setCelsWidth(f *excelize.File, sheet string) error {
 	if err := f.SetColWidth(sheet, ConfirmationsCol, ConfirmationsCol, ConfirmationWidth); err != nil {
 		return err
 	}
+	if err := f.SetColWidth(sheet, RemarksCol, RemarksCol, RemarkWidth); err != nil {
+		return err
+	}
+	if err := f.SetColWidth(sheet, ResultCol, ResultCol, ResultWidth); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -175,6 +191,16 @@ func setHeaders(f *excelize.File, sheet string) error {
 
 	confirmationsColAxis := fmt.Sprintf("%s%d", ConfirmationsCol, headerRow)
 	if err := f.SetCellStr(sheet, confirmationsColAxis, ProcedureHeader); err != nil {
+		return err
+	}
+
+	remarksColAxis := fmt.Sprintf("%s%d", RemarksCol, headerRow)
+	if err := f.SetCellStr(sheet, remarksColAxis, RemarksHeader); err != nil {
+		return err
+	}
+
+	resultColAxis := fmt.Sprintf("%s%d", ResultCol, headerRow)
+	if err := f.SetCellStr(sheet, resultColAxis, ResultHeader); err != nil {
 		return err
 	}
 
@@ -208,7 +234,7 @@ func setHeaders(f *excelize.File, sheet string) error {
 	if err != nil {
 		return err
 	}
-	return f.SetCellStyle(sheet, categoryColAxis, confirmationsColAxis, styleID)
+	return f.SetCellStyle(sheet, categoryColAxis, resultColAxis, styleID)
 }
 
 func setCellStyle(f *excelize.File, sheet string, rowTo int) error {
@@ -242,7 +268,7 @@ func setCellStyle(f *excelize.File, sheet string, rowTo int) error {
 		return err
 	}
 	hcell := fmt.Sprintf("%s%d", CategoryCol, rowFrom)
-	vcell := fmt.Sprintf("%s%d", ConfirmationsCol, rowTo)
+	vcell := fmt.Sprintf("%s%d", ResultCol, rowTo)
 	return f.SetCellStyle(sheet, hcell, vcell, styleID)
 }
 
@@ -282,6 +308,19 @@ func setConfirmations(f *excelize.File, sheet string, row int, confirmations []s
 			sb.WriteRune('\n')
 		}
 		sb.WriteRune(ConfirmationPrefix)
+		sb.WriteString(p)
+	}
+	return f.SetCellStr(sheet, axis, sb.String())
+}
+
+func setRemarks(f *excelize.File, sheet string, row int, remarks []string, sb *strings.Builder) error {
+	sb.Reset()
+	axis := fmt.Sprintf("%s%d", RemarksCol, row)
+	for j, p := range remarks {
+		if j != 0 {
+			sb.WriteRune('\n')
+		}
+		sb.WriteRune(RemarksPrefix)
 		sb.WriteString(p)
 	}
 	return f.SetCellStr(sheet, axis, sb.String())

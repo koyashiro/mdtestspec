@@ -73,7 +73,7 @@ func ParseSpec(input []byte) (*spec.Spec, error) {
 				if len(ssc.Confirmations) != 0 {
 					return nil, errors.New("unexpected list element")
 				}
-				ssc.Confirmations = parseCheckList(l)
+				ssc.Confirmations, ssc.Remarks = parseCheckListAndUnorderdList(l)
 			case 17:
 				if len(s.Categories) == 0 {
 					return nil, errors.New("unexpected list element")
@@ -142,7 +142,7 @@ func parseOrderedList(list *ast.List) []string {
 	return result
 }
 
-func parseCheckList(list *ast.List) []string {
+func parseUnorderedList(list *ast.List) []string {
 	result := make([]string, 0)
 	for _, n := range list.Children {
 		if li, ok := n.(*ast.ListItem); ok {
@@ -150,8 +150,7 @@ func parseCheckList(list *ast.List) []string {
 				if p, ok := n.(*ast.Paragraph); ok {
 					for _, n := range p.Children {
 						if t, ok := n.(*ast.Text); ok {
-							// TODO: use regex
-							if l := string(t.Literal[4:]); l != "" {
+							if l := string(t.Literal); l != "" {
 								result = append(result, l)
 								continue
 							}
@@ -165,4 +164,33 @@ func parseCheckList(list *ast.List) []string {
 		}
 	}
 	return result
+}
+
+func parseCheckListAndUnorderdList(list *ast.List) (checkList []string, unorderedList []string) {
+	checkList = make([]string, 0)
+	unorderedList = make([]string, 0)
+	for _, n := range list.Children {
+		if li, ok := n.(*ast.ListItem); ok {
+			for _, n := range li.Children {
+				if p, ok := n.(*ast.Paragraph); ok {
+					for _, n := range p.Children {
+						if t, ok := n.(*ast.Text); ok {
+							// TODO: use regex
+							if prefix, l := string(t.Literal[0:4]), string(t.Literal[4:]); prefix == "[ ] " && l != "" {
+								checkList = append(checkList, l)
+								continue
+							} else if l := string(t.Literal); l != "" {
+								unorderedList = append(unorderedList, l)
+								continue
+							}
+						}
+						continue
+					}
+				}
+				continue
+			}
+			continue
+		}
+	}
+	return
 }
