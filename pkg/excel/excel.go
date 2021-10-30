@@ -41,6 +41,18 @@ type Book struct {
 	file *excelize.File
 }
 
+func (b *Book) SaveAs(name string) error {
+	return b.file.SaveAs(name)
+}
+
+func (b *Book) WriteTo(w io.Writer) (int64, error) {
+	return b.file.WriteTo(w)
+}
+
+func (b *Book) WriteToBuffer() (*bytes.Buffer, error) {
+	return b.file.WriteToBuffer()
+}
+
 func CreateBook(spec *spec.Spec) (*Book, error) {
 	file := excelize.NewFile()
 
@@ -127,18 +139,6 @@ func CreateBook(spec *spec.Spec) (*Book, error) {
 	}
 
 	return &Book{file: file}, nil
-}
-
-func (b *Book) SaveAs(name string) error {
-	return b.file.SaveAs(name)
-}
-
-func (b *Book) WriteTo(w io.Writer) (int64, error) {
-	return b.file.WriteTo(w)
-}
-
-func (b *Book) WriteToBuffer() (*bytes.Buffer, error) {
-	return b.file.WriteToBuffer()
 }
 
 func setCelsWidth(f *excelize.File, sheet string) error {
