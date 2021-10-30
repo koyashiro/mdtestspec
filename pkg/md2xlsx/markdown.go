@@ -19,22 +19,28 @@ func (m *Markdown) AsSpec() *Spec {
 			switch heading.Level {
 			case 1:
 				s.Name = parseHeading(heading)
-				break
 			case 2:
-				c := &Category{}
-				c.Name = parseHeading(heading)
+				c := &Category{Name: parseHeading(heading)}
 				s.Categories = append(s.Categories, c)
-				break
 			case 3:
-				s.Name = parseHeading(heading)
-				break
+				if len(s.Categories) == 0 {
+					panic("invalid markdown")
+				}
+				c := s.Categories[len(s.Categories)-1]
+				sc := &SubCategory{Name: parseHeading(heading)}
+				c.SubCategories = append(c.SubCategories, sc)
 			case 4:
-				s.Name = parseHeading(heading)
-				break
+				if len(s.Categories) == 0 || len(s.Categories[len(s.Categories)-1].SubCategories) == 0 {
+					panic("invalid markdown")
+				}
+				c := s.Categories[len(s.Categories)-1]
+				sc := c.SubCategories[len(c.SubCategories)-1]
+				ssc := &SubSubCategory{Name: parseHeading(heading)}
+				sc.SubSubCategories = append(sc.SubSubCategories, ssc)
 			}
 		}
 	}
-	return &Spec{}
+	return s
 }
 
 type MarkdownParser struct {
