@@ -18,11 +18,11 @@ const ProceduresCol = "D"
 const ConfirmationsCol = "E"
 const ConfirmationPrefix = '・'
 
-const CategoryWidth = 15.
-const SubCategoryWidth = 15.
-const SubSubCategoryWidth = 15.
-const ProcedureWidth = 30.
-const ConfirmationWidth = 30.
+const CategoryWidth = 30.
+const SubCategoryWidth = 30.
+const SubSubCategoryWidth = 30.
+const ProcedureWidth = 70.
+const ConfirmationWidth = 70.
 
 type Book struct {
 	file *excelize.File
