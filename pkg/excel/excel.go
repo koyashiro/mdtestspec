@@ -63,6 +63,10 @@ func (b *Book) WriteSpec(spec *spec.Spec) error {
 	}
 	b.file.NewSheet(sheet)
 	b.file.DeleteSheet("sheet1")
+	styleID, err := b.file.NewStyle(`{ "alignment": { "vertical": "top", "wrap_text": true } }`)
+	if err != nil {
+		return err
+	}
 
 	if err := setCelsWidth(b.file, sheet); err != nil {
 		return err
@@ -72,25 +76,25 @@ func (b *Book) WriteSpec(spec *spec.Spec) error {
 	i := 2
 
 	for _, c := range spec.Categories {
-		if err := setCategory(b.file, sheet, i, c.Name); err != nil {
+		if err := setCategory(b.file, sheet, i, c.Name, styleID); err != nil {
 			return err
 		}
 
 		from := i
 		for _, sc := range c.SubCategories {
-			if err := setSubCategory(b.file, sheet, i, sc.Name); err != nil {
+			if err := setSubCategory(b.file, sheet, i, sc.Name, styleID); err != nil {
 				return err
 			}
 
 			from := i
 			for _, ssc := range sc.SubSubCategories {
-				if err := setSubSubCategory(b.file, sheet, i, ssc.Name); err != nil {
+				if err := setSubSubCategory(b.file, sheet, i, ssc.Name, styleID); err != nil {
 					return err
 				}
-				if err := setConfirmations(b.file, sheet, i, ssc.Confirmations, &sb); err != nil {
+				if err := setConfirmations(b.file, sheet, i, ssc.Confirmations, &sb, styleID); err != nil {
 					return err
 				}
-				if err := setProcedures(b.file, sheet, i, ssc.Procedures, &sb); err != nil {
+				if err := setProcedures(b.file, sheet, i, ssc.Procedures, &sb, styleID); err != nil {
 					return err
 				}
 				i++
@@ -134,22 +138,29 @@ func setCelsWidth(f *excelize.File, sheet string) error {
 	return nil
 }
 
-func setCategory(f *excelize.File, sheet string, row int, name string) error {
+func setValue(f *excelize.File, sheet string, axis string, value string, styleID int) error {
+	if err := f.SetCellValue(sheet, axis, value); err != nil {
+		return err
+	}
+	return f.SetCellStyle(sheet, axis, axis, styleID)
+}
+
+func setCategory(f *excelize.File, sheet string, row int, name string, styleID int) error {
 	axis := fmt.Sprintf("%s%d", CategoryCol, row)
-	return f.SetCellValue(sheet, axis, name)
+	return setValue(f, sheet, axis, name, styleID)
 }
 
-func setSubCategory(f *excelize.File, sheet string, row int, name string) error {
+func setSubCategory(f *excelize.File, sheet string, row int, name string, styleID int) error {
 	axis := fmt.Sprintf("%s%d", SubCategoryCol, row)
-	return f.SetCellValue(sheet, axis, name)
+	return setValue(f, sheet, axis, name, styleID)
 }
 
-func setSubSubCategory(f *excelize.File, sheet string, row int, name string) error {
+func setSubSubCategory(f *excelize.File, sheet string, row int, name string, styleID int) error {
 	axis := fmt.Sprintf("%s%d", SubSubCategoryCol, row)
-	return f.SetCellValue(sheet, axis, name)
+	return setValue(f, sheet, axis, name, styleID)
 }
 
-func setProcedures(f *excelize.File, sheet string, row int, procedures []string, sb *strings.Builder) error {
+func setProcedures(f *excelize.File, sheet string, row int, procedures []string, sb *strings.Builder, styleID int) error {
 	sb.Reset()
 	axis := fmt.Sprintf("%s%d", ProceduresCol, row)
 	for j, p := range procedures {
@@ -159,10 +170,10 @@ func setProcedures(f *excelize.File, sheet string, row int, procedures []string,
 		sb.WriteString(fmt.Sprintf("%d. ", j+1))
 		sb.WriteString(p)
 	}
-	return f.SetCellValue(sheet, axis, sb.String())
+	return setValue(f, sheet, axis, sb.String(), styleID)
 }
 
-func setConfirmations(f *excelize.File, sheet string, row int, confirmations []string, sb *strings.Builder) error {
+func setConfirmations(f *excelize.File, sheet string, row int, confirmations []string, sb *strings.Builder, styleID int) error {
 	sb.Reset()
 	axis := fmt.Sprintf("%s%d", ConfirmationsCol, row)
 	for j, p := range confirmations {
@@ -172,5 +183,5 @@ func setConfirmations(f *excelize.File, sheet string, row int, confirmations []s
 		sb.WriteRune(ConfirmationPrefix)
 		sb.WriteString(p)
 	}
-	return f.SetCellValue(sheet, axis, sb.String())
+	return setValue(f, sheet, axis, sb.String(), styleID)
 }
