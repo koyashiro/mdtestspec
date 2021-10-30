@@ -42,7 +42,7 @@ func TestParse(t *testing.T) {
 	}
 
 	if len(s.Categories) != 2 {
-		t.Errorf("len(s.Categories) = %v, want %v", s.Name, 2)
+		t.Errorf("len(s.Categories) = %v, want %v", len(s.Categories), 2)
 	}
 
 	// Category 1
