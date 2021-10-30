@@ -73,7 +73,7 @@ func ParseSpec(input []byte) (*spec.Spec, error) {
 				if len(ssc.Procedures) != 0 {
 					return nil, errors.New("unexpected list element")
 				}
-				ssc.Procedures = parseList(l)
+				ssc.Procedures = parseOrderedList(l)
 			}
 		}
 	}
@@ -101,7 +101,7 @@ func parseHeading(heading *ast.Heading) string {
 	return ""
 }
 
-func parseList(list *ast.List) []string {
+func parseOrderedList(list *ast.List) []string {
 	result := make([]string, 0)
 	for _, n := range list.Children {
 		if li, ok := n.(*ast.ListItem); ok {
@@ -110,6 +110,31 @@ func parseList(list *ast.List) []string {
 					for _, n := range p.Children {
 						if t, ok := n.(*ast.Text); ok {
 							if l := string(t.Literal); l != "" {
+								result = append(result, l)
+								continue
+							}
+						}
+						continue
+					}
+				}
+				continue
+			}
+			continue
+		}
+	}
+	return result
+}
+
+func parseCheckList(list *ast.List) []string {
+	result := make([]string, 0)
+	for _, n := range list.Children {
+		if li, ok := n.(*ast.ListItem); ok {
+			for _, n := range li.Children {
+				if p, ok := n.(*ast.Paragraph); ok {
+					for _, n := range p.Children {
+						if t, ok := n.(*ast.Text); ok {
+							// TODO: use regex
+							if l := string(t.Literal[4:]); l != "" {
 								result = append(result, l)
 								continue
 							}

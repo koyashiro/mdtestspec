@@ -499,24 +499,6 @@ func TestParseHeading4(t *testing.T) {
 	}
 }
 
-func TestParseUnorderedList(t *testing.T) {
-	input := `
-* Procedure 1
-* Procedure 2
-* Procedure 3
-`
-	p := parser.New()
-	n := p.Parse([]byte(input)).GetChildren()[0]
-	if l, ok := n.(*ast.List); ok {
-		p := parseList(l)
-		if len(p) != 3 {
-			t.Errorf("len(p) = %v, want %v", len(p), 3)
-		}
-	} else {
-		t.Errorf("ok = %v, want %v", ok, true)
-	}
-}
-
 func TestParseOrderedList(t *testing.T) {
 	input := `
 1. Procedure 1
@@ -526,9 +508,51 @@ func TestParseOrderedList(t *testing.T) {
 	p := parser.New()
 	n := p.Parse([]byte(input)).GetChildren()[0]
 	if l, ok := n.(*ast.List); ok {
-		p := parseList(l)
+		p := parseOrderedList(l)
 		if len(p) != 3 {
 			t.Errorf("len(p) = %v, want %v", len(p), 3)
+		}
+
+		if p[0] != "Procedure 1" {
+			t.Errorf("p[0] = %v, want %v", p[0], "Procedure 1")
+		}
+
+		if p[1] != "Procedure 2" {
+			t.Errorf("p[1] = %v, want %v", p[1], "Procedure 2")
+		}
+
+		if p[2] != "Procedure 3" {
+			t.Errorf("p[2] = %v, want %v", p[1], "Procedure 3")
+		}
+	} else {
+		t.Errorf("ok = %v, want %v", ok, true)
+	}
+}
+
+func TestParseCheckList(t *testing.T) {
+	input := `
+- [ ] Confirmation 1
+- [ ] Confirmation 2
+- [ ] Confirmation 3
+`
+	p := parser.New()
+	n := p.Parse([]byte(input)).GetChildren()[0]
+	if l, ok := n.(*ast.List); ok {
+		c := parseCheckList(l)
+		if len(c) != 3 {
+			t.Errorf("len(c) = %v, want %v", len(c), 3)
+		}
+
+		if c[0] != "Confirmation 1" {
+			t.Errorf("c[0] = %v, want %v", c[0], "Confirmation 1")
+		}
+
+		if c[1] != "Confirmation 2" {
+			t.Errorf("c[1] = %v, want %v", c[1], "Confirmation 2")
+		}
+
+		if c[2] != "Confirmation 3" {
+			t.Errorf("c[2] = %v, want %v", c[1], "Confirmation 3")
 		}
 	} else {
 		t.Errorf("ok = %v, want %v", ok, true)
