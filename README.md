@@ -20,4 +20,4 @@ example spec file is [here.md](https://github.com/koyashiro/md2xlsx/blob/main/ex
 md2xlsx spec.md output.xlsx
 ```
 
-![image](https://user-images.githubusercontent.com/6698252/139557567-4b088527-b38a-4609-8eeb-a58fa2c0ea49.png)
+![image](https://user-images.githubusercontent.com/6698252/139558046-dc1d36e9-0fdc-40c3-9edd-3b3f2f36e382.png)
