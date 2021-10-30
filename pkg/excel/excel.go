@@ -1,7 +1,9 @@
 package excel
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/xuri/excelize/v2"
@@ -36,6 +38,14 @@ func OpenBook(filename string) (*Book, error) {
 
 func (b *Book) SaveAs(name string) error {
 	return b.file.SaveAs(name)
+}
+
+func (b *Book) WriteTo(w io.Writer) (int64, error) {
+	return b.file.WriteTo(w)
+}
+
+func (b *Book) WriteToBuffer() (*bytes.Buffer, error) {
+	return b.file.WriteToBuffer()
 }
 
 func (b *Book) WriteSpec(spec *spec.Spec) {
