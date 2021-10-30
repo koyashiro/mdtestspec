@@ -37,8 +37,13 @@ func (b *Book) SaveAs(name string) error {
 }
 
 func (b *Book) WriteSpec(spec *Spec) {
-	sheet := spec.Name
-	b.file.NewSheet(spec.Name)
+	var sheet string
+	if spec.Name == "" {
+		sheet = "no title"
+	} else {
+		sheet = spec.Name
+	}
+	b.file.NewSheet(sheet)
 	b.file.DeleteSheet("sheet1")
 
 	sb := strings.Builder{}
