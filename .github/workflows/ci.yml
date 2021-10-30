@@ -4,9 +4,19 @@ on:
   push:
     branches:
       - main
+    paths:
+      - cmd/**
+      - pkg/**
+      - go.mod
+      - go.sum
   pull_request:
     branches:
       - main
+    paths:
+      - cmd/**
+      - pkg/**
+      - go.mod
+      - go.sum
 
 jobs:
   build:
