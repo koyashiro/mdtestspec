@@ -79,35 +79,44 @@ func (b *Book) WriteSpec(spec *spec.Spec) error {
 	}
 
 	sb := strings.Builder{}
-	i := 2
+	row := 2
 
-	for _, c := range spec.Categories {
-		if err := setCategory(b.file, sheet, i, c.Name); err != nil {
+	for i, c := range spec.Categories {
+		if i != 0 {
+			row++
+		}
+
+		if err := setCategory(b.file, sheet, row, c.Name); err != nil {
 			return err
 		}
 
-		categoryFrom := i
-		for _, sc := range c.SubCategories {
-			if err := setSubCategory(b.file, sheet, i, sc.Name); err != nil {
+		categoryFrom := row
+		for j, sc := range c.SubCategories {
+			if j != 0 {
+				row++
+			}
+
+			if err := setSubCategory(b.file, sheet, row, sc.Name); err != nil {
 				return err
 			}
 
-			subCategoryFrom := i
-			for j, ssc := range sc.SubSubCategories {
-				if j != 0 {
-					i++
+			subCategoryFrom := row
+			for k, ssc := range sc.SubSubCategories {
+				if k != 0 {
+					row++
 				}
-				if err := setSubSubCategory(b.file, sheet, i, ssc.Name); err != nil {
+
+				if err := setSubSubCategory(b.file, sheet, row, ssc.Name); err != nil {
 					return err
 				}
-				if err := setConfirmations(b.file, sheet, i, ssc.Confirmations, &sb); err != nil {
+				if err := setConfirmations(b.file, sheet, row, ssc.Confirmations, &sb); err != nil {
 					return err
 				}
-				if err := setProcedures(b.file, sheet, i, ssc.Procedures, &sb); err != nil {
+				if err := setProcedures(b.file, sheet, row, ssc.Procedures, &sb); err != nil {
 					return err
 				}
 			}
-			subCategoryTo := i
+			subCategoryTo := row
 
 			hcell := fmt.Sprintf("%s%d", SubCategoryCol, subCategoryFrom)
 			vcell := fmt.Sprintf("%s%d", SubCategoryCol, subCategoryTo)
@@ -115,7 +124,7 @@ func (b *Book) WriteSpec(spec *spec.Spec) error {
 				return err
 			}
 		}
-		categoryTo := i
+		categoryTo := row
 
 		hcell := fmt.Sprintf("%s%d", CategoryCol, categoryFrom)
 		vcell := fmt.Sprintf("%s%d", CategoryCol, categoryTo)
@@ -124,7 +133,7 @@ func (b *Book) WriteSpec(spec *spec.Spec) error {
 		}
 	}
 
-	return setCellStyle(b.file, sheet, i)
+	return setCellStyle(b.file, sheet, row)
 }
 
 func setCelsWidth(f *excelize.File, sheet string) error {
