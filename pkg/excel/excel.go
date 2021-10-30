@@ -90,13 +90,13 @@ func (b *Book) WriteSpec(spec *spec.Spec) error {
 			return err
 		}
 
-		from := i
+		categoryFrom := i
 		for _, sc := range c.SubCategories {
 			if err := setSubCategory(b.file, sheet, i, sc.Name, styleID); err != nil {
 				return err
 			}
 
-			from := i
+			subCategoryFrom := i
 			for j, ssc := range sc.SubSubCategories {
 				if j != 0 {
 					i++
@@ -111,18 +111,18 @@ func (b *Book) WriteSpec(spec *spec.Spec) error {
 					return err
 				}
 			}
-			to := i
+			subCategoryTo := i
 
-			hcell := fmt.Sprintf("%s%d", SubCategoryCol, from)
-			vcell := fmt.Sprintf("%s%d", SubCategoryCol, to)
+			hcell := fmt.Sprintf("%s%d", SubCategoryCol, subCategoryFrom)
+			vcell := fmt.Sprintf("%s%d", SubCategoryCol, subCategoryTo)
 			if err := b.file.MergeCell(sheet, hcell, vcell); err != nil {
 				return err
 			}
 		}
-		to := i
+		categoryTo := i
 
-		hcell := fmt.Sprintf("%s%d", CategoryCol, from)
-		vcell := fmt.Sprintf("%s%d", CategoryCol, to)
+		hcell := fmt.Sprintf("%s%d", CategoryCol, categoryFrom)
+		vcell := fmt.Sprintf("%s%d", CategoryCol, categoryTo)
 		if err := b.file.MergeCell(sheet, hcell, vcell); err != nil {
 			return err
 		}
