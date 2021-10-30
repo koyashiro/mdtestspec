@@ -31,18 +31,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	s, err := parser.ParseSpec(data)
+	spec, err := parser.ParseSpec(data)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	b := excel.NewBook()
-	if err := b.WriteSpec(s); err != nil {
+	book, err := excel.CreateBook(spec)
+	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	if err := b.SaveAs(output); err != nil {
+
+	if err := book.SaveAs(output); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

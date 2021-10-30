@@ -34,18 +34,89 @@ type Book struct {
 	file *excelize.File
 }
 
-func NewBook() *Book {
-	f := excelize.NewFile()
-	f.DeleteSheet("sheet1")
-	return &Book{file: f}
-}
+func CreateBook(spec *spec.Spec) (*Book, error) {
+	file := excelize.NewFile()
 
-func OpenBook(filename string) (*Book, error) {
-	f, err := excelize.OpenFile(filename)
-	if err != nil {
+	var sheet string
+	if spec.Name == "" {
+		sheet = "no title"
+	} else {
+		sheet = spec.Name
+	}
+
+	if sheet != "sheet1" {
+		file.NewSheet(sheet)
+		file.DeleteSheet("sheet1")
+	}
+
+	if err := setCelsWidth(file, sheet); err != nil {
 		return nil, err
 	}
-	return &Book{file: f}, nil
+
+	if err := setHeaders(file, sheet); err != nil {
+		return nil, err
+	}
+
+	sb := strings.Builder{}
+	row := 2
+
+	for i, c := range spec.Categories {
+		if i != 0 {
+			row++
+		}
+
+		if err := setCategory(file, sheet, row, c.Name); err != nil {
+			return nil, err
+		}
+
+		categoryFrom := row
+		for j, sc := range c.SubCategories {
+			if j != 0 {
+				row++
+			}
+
+			if err := setSubCategory(file, sheet, row, sc.Name); err != nil {
+				return nil, err
+			}
+
+			subCategoryFrom := row
+			for k, ssc := range sc.SubSubCategories {
+				if k != 0 {
+					row++
+				}
+
+				if err := setSubSubCategory(file, sheet, row, ssc.Name); err != nil {
+					return nil, err
+				}
+				if err := setConfirmations(file, sheet, row, ssc.Confirmations, &sb); err != nil {
+					return nil, err
+				}
+				if err := setProcedures(file, sheet, row, ssc.Procedures, &sb); err != nil {
+					return nil, err
+				}
+			}
+			subCategoryTo := row
+
+			hcell := fmt.Sprintf("%s%d", SubCategoryCol, subCategoryFrom)
+			vcell := fmt.Sprintf("%s%d", SubCategoryCol, subCategoryTo)
+			if err := file.MergeCell(sheet, hcell, vcell); err != nil {
+				return nil, err
+			}
+		}
+		categoryTo := row
+
+		hcell := fmt.Sprintf("%s%d", CategoryCol, categoryFrom)
+		vcell := fmt.Sprintf("%s%d", CategoryCol, categoryTo)
+		if err := file.MergeCell(sheet, hcell, vcell); err != nil {
+			return nil, err
+		}
+	}
+
+	if err := setCellStyle(file, sheet, row); err != nil {
+		return nil, err
+	}
+
+	return &Book{file: file}, nil
 }
 
 func (b *Book) SaveAs(name string) error {
@@ -58,82 +129,6 @@ func (b *Book) WriteTo(w io.Writer) (int64, error) {
 
 func (b *Book) WriteToBuffer() (*bytes.Buffer, error) {
 	return b.file.WriteToBuffer()
-}
-
-func (b *Book) WriteSpec(spec *spec.Spec) error {
-	var sheet string
-	if spec.Name == "" {
-		sheet = "no title"
-	} else {
-		sheet = spec.Name
-	}
-	b.file.NewSheet(sheet)
-	b.file.DeleteSheet("sheet1")
-
-	if err := setCelsWidth(b.file, sheet); err != nil {
-		return err
-	}
-
-	if err := setHeaders(b.file, sheet); err != nil {
-		return err
-	}
-
-	sb := strings.Builder{}
-	row := 2
-
-	for i, c := range spec.Categories {
-		if i != 0 {
-			row++
-		}
-
-		if err := setCategory(b.file, sheet, row, c.Name); err != nil {
-			return err
-		}
-
-		categoryFrom := row
-		for j, sc := range c.SubCategories {
-			if j != 0 {
-				row++
-			}
-
-			if err := setSubCategory(b.file, sheet, row, sc.Name); err != nil {
-				return err
-			}
-
-			subCategoryFrom := row
-			for k, ssc := range sc.SubSubCategories {
-				if k != 0 {
-					row++
-				}
-
-				if err := setSubSubCategory(b.file, sheet, row, ssc.Name); err != nil {
-					return err
-				}
-				if err := setConfirmations(b.file, sheet, row, ssc.Confirmations, &sb); err != nil {
-					return err
-				}
-				if err := setProcedures(b.file, sheet, row, ssc.Procedures, &sb); err != nil {
-					return err
-				}
-			}
-			subCategoryTo := row
-
-			hcell := fmt.Sprintf("%s%d", SubCategoryCol, subCategoryFrom)
-			vcell := fmt.Sprintf("%s%d", SubCategoryCol, subCategoryTo)
-			if err := b.file.MergeCell(sheet, hcell, vcell); err != nil {
-				return err
-			}
-		}
-		categoryTo := row
-
-		hcell := fmt.Sprintf("%s%d", CategoryCol, categoryFrom)
-		vcell := fmt.Sprintf("%s%d", CategoryCol, categoryTo)
-		if err := b.file.MergeCell(sheet, hcell, vcell); err != nil {
-			return err
-		}
-	}
-
-	return setCellStyle(b.file, sheet, row)
 }
 
 func setCelsWidth(f *excelize.File, sheet string) error {
