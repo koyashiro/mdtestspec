@@ -18,6 +18,12 @@ const ProceduresCol = "D"
 const ConfirmationsCol = "E"
 const ConfirmationPrefix = '・'
 
+const CategoryWidth = 15.
+const SubCategoryWidth = 15.
+const SubSubCategoryWidth = 15.
+const ProcedureWidth = 30.
+const ConfirmationWidth = 30.
+
 type Book struct {
 	file *excelize.File
 }
@@ -57,6 +63,12 @@ func (b *Book) WriteSpec(spec *spec.Spec) {
 	}
 	b.file.NewSheet(sheet)
 	b.file.DeleteSheet("sheet1")
+
+	b.file.SetColWidth(sheet, CategoryCol, CategoryCol, CategoryWidth)
+	b.file.SetColWidth(sheet, SubCategoryCol, CategoryCol, SubCategoryWidth)
+	b.file.SetColWidth(sheet, SubSubCategoryCol, CategoryCol, SubSubCategoryWidth)
+	b.file.SetColWidth(sheet, ProceduresCol, ProceduresCol, ProcedureWidth)
+	b.file.SetColWidth(sheet, ConfirmationsCol, ConfirmationsCol, ConfirmationWidth)
 
 	sb := strings.Builder{}
 	i := 2
