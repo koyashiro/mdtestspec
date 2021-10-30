@@ -10,26 +10,85 @@ import (
 func TestParse(t *testing.T) {
 	input := []byte(`
 # Spec
+
 ## Category 1
+
 ### Sub Category 1-1
+
 #### Sub Sub Category 1-1-1
+
+1. Procedure 1-1-1-1
+
 #### Sub Sub Category 1-1-2
+
+1. Procedure 1-1-2-1
+2. Procedure 1-1-2-2
+
 #### Sub Sub Category 1-1-3
+
+1. Procedure 1-1-3-1
+2. Procedure 1-1-3-2
+3. Procedure 1-1-3-3
+
 ### Sub Category 1-2
+
 #### Sub Sub Category 1-2-1
+
+1. Procedure 1-2-1-1
+
 #### Sub Sub Category 1-2-2
+
+1. Procedure 1-2-2-1
+2. Procedure 1-2-2-2
+
 ## Category 2
+
 ### Sub Category 2-1
+
 #### Sub Sub Category 2-1-1
+
+1. Procedure 2-1-1-1
+
 #### Sub Sub Category 2-1-2
+
+1. Procedure 2-1-2-1
+2. Procedure 2-1-2-2
+
 #### Sub Sub Category 2-1-3
+
+1. Procedure 2-1-3-1
+2. Procedure 2-1-3-2
+3. Procedure 2-1-3-3
+
 ### Sub Category 2-2
+
 #### Sub Sub Category 2-2-1
+
+1. Procedure 2-2-1-1
+
 ### Sub Category 2-3
+
 #### Sub Sub Category 2-3-1
+
+1. Procedure 2-3-1-1
+
 #### Sub Sub Category 2-3-2
+
+1. Procedure 2-3-2-1
+2. Procedure 2-3-2-2
+
 #### Sub Sub Category 2-3-3
+
+1. Procedure 2-3-3-1
+2. Procedure 2-3-3-2
+3. Procedure 2-3-3-3
+
 #### Sub Sub Category 2-3-4
+
+1. Procedure 2-3-4-1
+2. Procedure 2-3-4-2
+3. Procedure 2-3-4-3
+4. Procedure 2-3-4-4
 `)
 
 	s, err := ParseSpec(input)
@@ -68,17 +127,62 @@ func TestParse(t *testing.T) {
 	if ssc.Name != "Sub Sub Category 1-1-1" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 1-1-1")
 	}
+	if len(ssc.Procedures) != 1 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 1)
+	}
+
+	// Procedure 1-1-1-1
+	p := ssc.Procedures[0]
+	if p != "Procedure 1-1-1-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 1-1-1-1")
+	}
 
 	// Sub Sub Category 1-1-2
 	ssc = sc.SubSubCategories[1]
 	if ssc.Name != "Sub Sub Category 1-1-2" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 1-1-2")
 	}
+	if len(ssc.Procedures) != 2 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 2)
+	}
+
+	// Procedure 1-1-2-1
+	p = ssc.Procedures[0]
+	if p != "Procedure 1-1-2-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 1-1-2-1")
+	}
+
+	// Procedure 1-1-2-2
+	p = ssc.Procedures[1]
+	if p != "Procedure 1-1-2-2" {
+		t.Errorf("p = %v, want %v", p, "Procedure 1-1-2-2")
+	}
 
 	// Sub Sub Category 1-1-3
 	ssc = sc.SubSubCategories[2]
 	if ssc.Name != "Sub Sub Category 1-1-3" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 1-1-3")
+	}
+	if len(ssc.Procedures) != 3 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 3)
+	}
+
+	// Procedure 1-1-3-1
+	p = ssc.Procedures[0]
+	if p != "Procedure 1-1-3-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 1-1-3-1")
+	}
+
+	// Procedure 1-1-3-2
+	p = ssc.Procedures[1]
+	if p != "Procedure 1-1-3-2" {
+		t.Errorf("p = %v, want %v", p, "Procedure 1-1-3-2")
+	}
+
+	// Procedure 1-1-3-3
+	p = ssc.Procedures[2]
+	if p != "Procedure 1-1-3-3" {
+		t.Errorf("p = %v, want %v", p, "Procedure 1-1-3-3")
 	}
 
 	// Sub Category 1-2
@@ -95,11 +199,29 @@ func TestParse(t *testing.T) {
 	if ssc.Name != "Sub Sub Category 1-2-1" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 1-2-2")
 	}
+	if len(ssc.Procedures) != 1 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 1)
+	}
+
+	// Procedure 1-2-1-1
+	p = ssc.Procedures[0]
+	if p != "Procedure 1-2-1-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 1-2-1-1")
+	}
 
 	// Sub Sub Category 1-2-2
 	ssc = sc.SubSubCategories[1]
 	if ssc.Name != "Sub Sub Category 1-2-2" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 1-2-2")
+	}
+	if len(ssc.Procedures) != 2 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 2)
+	}
+
+	// Procedure 1-2-2-1
+	p = ssc.Procedures[0]
+	if p != "Procedure 1-2-2-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 1-2-2-1")
 	}
 
 	// Category 2
@@ -125,17 +247,62 @@ func TestParse(t *testing.T) {
 	if ssc.Name != "Sub Sub Category 2-1-1" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 2-1-1")
 	}
+	if len(ssc.Procedures) != 1 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 1)
+	}
+
+	// Procedure 2-1-1-1
+	p = ssc.Procedures[0]
+	if p != "Procedure 2-1-1-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-1-1-1")
+	}
 
 	// Sub Sub Category 2-1-2
 	ssc = sc.SubSubCategories[1]
 	if ssc.Name != "Sub Sub Category 2-1-2" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 2-1-2")
 	}
+	if len(ssc.Procedures) != 2 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 2)
+	}
+
+	// Procedure 2-1-2-1
+	p = ssc.Procedures[0]
+	if p != "Procedure 2-1-2-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-1-2-1")
+	}
+
+	// Procedure 2-1-2-2
+	p = ssc.Procedures[1]
+	if p != "Procedure 2-1-2-2" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-1-2-2")
+	}
 
 	// Sub Sub Category 2-1-3
 	ssc = sc.SubSubCategories[2]
 	if ssc.Name != "Sub Sub Category 2-1-3" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 2-1-3")
+	}
+	if len(ssc.Procedures) != 3 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 3)
+	}
+
+	// Procedure 2-1-3-1
+	p = ssc.Procedures[0]
+	if p != "Procedure 2-1-3-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-1-3-1")
+	}
+
+	// Procedure 2-1-3-2
+	p = ssc.Procedures[1]
+	if p != "Procedure 2-1-3-2" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-1-3-2")
+	}
+
+	// Procedure 2-1-3-3
+	p = ssc.Procedures[2]
+	if p != "Procedure 2-1-3-3" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-1-3-3")
 	}
 
 	// Sub Category 2-2
@@ -152,6 +319,15 @@ func TestParse(t *testing.T) {
 	if ssc.Name != "Sub Sub Category 2-2-1" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 2-2-1")
 	}
+	if len(ssc.Procedures) != 1 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 1)
+	}
+
+	// Procedure 2-2-1-1
+	p = ssc.Procedures[0]
+	if p != "Procedure 2-2-1-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-2-1-1")
+	}
 
 	// Sub Category 2-3
 	sc = c.SubCategories[2]
@@ -167,11 +343,35 @@ func TestParse(t *testing.T) {
 	if ssc.Name != "Sub Sub Category 2-3-1" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 2-3-1")
 	}
+	if len(ssc.Procedures) != 1 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 1)
+	}
+
+	// Procedure 2-3-1-1
+	p = ssc.Procedures[0]
+	if p != "Procedure 2-3-1-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-3-1-1")
+	}
 
 	// Sub Sub Category 2-3-2
 	ssc = sc.SubSubCategories[1]
 	if ssc.Name != "Sub Sub Category 2-3-2" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 2-3-2")
+	}
+	if len(ssc.Procedures) != 2 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 2)
+	}
+
+	// Procedure 2-3-2-1
+	p = ssc.Procedures[0]
+	if p != "Procedure 2-3-2-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-3-2-1")
+	}
+
+	// Procedure 2-3-2-2
+	p = ssc.Procedures[1]
+	if p != "Procedure 2-3-2-2" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-3-2-2")
 	}
 
 	// Sub Sub Category 2-3-3
@@ -179,11 +379,59 @@ func TestParse(t *testing.T) {
 	if ssc.Name != "Sub Sub Category 2-3-3" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 2-3-3")
 	}
+	if len(ssc.Procedures) != 3 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 3)
+	}
+
+	// Procedure 2-3-3-1
+	p = ssc.Procedures[0]
+	if p != "Procedure 2-3-3-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-3-3-1")
+	}
+
+	// Procedure 2-3-3-2
+	p = ssc.Procedures[1]
+	if p != "Procedure 2-3-3-2" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-3-3-2")
+	}
+
+	// Procedure 2-3-3-3
+	p = ssc.Procedures[2]
+	if p != "Procedure 2-3-3-3" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-3-3-3")
+	}
 
 	// Sub Sub Category 2-3-4
 	ssc = sc.SubSubCategories[3]
 	if ssc.Name != "Sub Sub Category 2-3-4" {
 		t.Errorf("ssc.Name = %v, want %v", ssc.Name, "Sub Sub Category 2-3-4")
+	}
+	if len(ssc.Procedures) != 4 {
+		t.Errorf("len(ssc.Procedures) = %v, want %v", len(ssc.Procedures), 4)
+	}
+
+	// Procedure 2-3-4-1
+	p = ssc.Procedures[0]
+	if p != "Procedure 2-3-4-1" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-3-4-1")
+	}
+
+	// Procedure 2-3-4-2
+	p = ssc.Procedures[1]
+	if p != "Procedure 2-3-4-2" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-3-4-2")
+	}
+
+	// Procedure 2-3-4-3
+	p = ssc.Procedures[2]
+	if p != "Procedure 2-3-4-3" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-3-4-3")
+	}
+
+	// Procedure 2-3-4-4
+	p = ssc.Procedures[3]
+	if p != "Procedure 2-3-4-4" {
+		t.Errorf("p = %v, want %v", p, "Procedure 2-3-4-4")
 	}
 }
 
@@ -260,7 +508,7 @@ func TestParseUnorderedList(t *testing.T) {
 	p := parser.New()
 	n := p.Parse([]byte(input)).GetChildren()[0]
 	if l, ok := n.(*ast.List); ok {
-		p := parseUnorderdList(l)
+		p := parseList(l)
 		if len(p) != 3 {
 			t.Errorf("len(p) = %v, want %v", len(p), 3)
 		}
@@ -278,7 +526,7 @@ func TestParseOrderedList(t *testing.T) {
 	p := parser.New()
 	n := p.Parse([]byte(input)).GetChildren()[0]
 	if l, ok := n.(*ast.List); ok {
-		p := parseOrderdList(l)
+		p := parseList(l)
 		if len(p) != 3 {
 			t.Errorf("len(p) = %v, want %v", len(p), 3)
 		}

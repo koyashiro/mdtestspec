@@ -2,7 +2,6 @@ package parser
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 
 	"github.com/gomarkdown/markdown/ast"
@@ -53,6 +52,29 @@ func ParseSpec(input []byte) (*spec.Spec, error) {
 				ssc := &spec.SubSubCategory{Name: parseHeading(heading)}
 				sc.SubSubCategories = append(sc.SubSubCategories, ssc)
 			}
+			continue
+		}
+
+		if l, ok := n.(*ast.List); ok {
+			switch l.ListFlags {
+			case 17:
+				if len(s.Categories) == 0 {
+					return nil, errors.New("unexpected list element")
+				}
+				c := s.Categories[len(s.Categories)-1]
+				if len(c.SubCategories) == 0 {
+					return nil, errors.New("unexpected list element")
+				}
+				sc := c.SubCategories[len(c.SubCategories)-1]
+				if len(sc.SubSubCategories) == 0 {
+					return nil, errors.New("unexpected list element")
+				}
+				ssc := sc.SubSubCategories[len(sc.SubSubCategories)-1]
+				if len(ssc.Procedures) != 0 {
+					return nil, errors.New("unexpected list element")
+				}
+				ssc.Procedures = parseList(l)
+			}
 		}
 	}
 
@@ -79,13 +101,8 @@ func parseHeading(heading *ast.Heading) string {
 	return ""
 }
 
-func parseOrderdList(list *ast.List) []string {
+func parseList(list *ast.List) []string {
 	procedures := make([]string, 0)
-
-	if list.ListFlags != 17 {
-		panic(fmt.Sprintf("List type is not ordered, list type: %d", list.ListFlags))
-	}
-
 	for _, n := range list.Children {
 		if li, ok := n.(*ast.ListItem); ok {
 			for _, n := range li.Children {
@@ -105,36 +122,5 @@ func parseOrderdList(list *ast.List) []string {
 			continue
 		}
 	}
-
-	return procedures
-}
-
-func parseUnorderdList(list *ast.List) []string {
-	procedures := make([]string, 0)
-
-	if list.ListFlags != 16 {
-		panic(fmt.Sprintf("List type is not unordered, list type: %d", list.ListFlags))
-	}
-
-	for _, n := range list.Children {
-		if li, ok := n.(*ast.ListItem); ok {
-			for _, n := range li.Children {
-				if p, ok := n.(*ast.Paragraph); ok {
-					for _, n := range p.Children {
-						if t, ok := n.(*ast.Text); ok {
-							if l := string(t.Literal); l != "" {
-								procedures = append(procedures, l)
-								continue
-							}
-						}
-						continue
-					}
-				}
-				continue
-			}
-			continue
-		}
-	}
-
 	return procedures
 }
