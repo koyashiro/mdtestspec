@@ -1,4 +1,4 @@
-package md2xlsx
+package parser
 
 import (
 	"testing"

@@ -1,4 +1,4 @@
-package md2xlsx
+package parser
 
 import (
 	"fmt"
@@ -6,28 +6,30 @@ import (
 
 	"github.com/gomarkdown/markdown/ast"
 	"github.com/gomarkdown/markdown/parser"
+
+	"github.com/koyashiro/md2xlsx/pkg/spec"
 )
 
 type Markdown struct {
 	doc *ast.Document
 }
 
-func (m *Markdown) AsSpec() *Spec {
-	s := &Spec{}
+func (m *Markdown) AsSpec() *spec.Spec {
+	s := &spec.Spec{}
 	for _, n := range m.doc.Children {
 		if heading, ok := n.(*ast.Heading); ok {
 			switch heading.Level {
 			case 1:
 				s.Name = parseHeading(heading)
 			case 2:
-				c := &Category{Name: parseHeading(heading)}
+				c := &spec.Category{Name: parseHeading(heading)}
 				s.Categories = append(s.Categories, c)
 			case 3:
 				if len(s.Categories) == 0 {
 					panic("invalid markdown")
 				}
 				c := s.Categories[len(s.Categories)-1]
-				sc := &SubCategory{Name: parseHeading(heading)}
+				sc := &spec.SubCategory{Name: parseHeading(heading)}
 				c.SubCategories = append(c.SubCategories, sc)
 			case 4:
 				if len(s.Categories) == 0 || len(s.Categories[len(s.Categories)-1].SubCategories) == 0 {
@@ -35,7 +37,7 @@ func (m *Markdown) AsSpec() *Spec {
 				}
 				c := s.Categories[len(s.Categories)-1]
 				sc := c.SubCategories[len(c.SubCategories)-1]
-				ssc := &SubSubCategory{Name: parseHeading(heading)}
+				ssc := &spec.SubSubCategory{Name: parseHeading(heading)}
 				sc.SubSubCategories = append(sc.SubSubCategories, ssc)
 			}
 		}

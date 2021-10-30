@@ -7,7 +7,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/koyashiro/md2xlsx/pkg/md2xlsx"
+	"github.com/koyashiro/md2xlsx/pkg/excel"
+	"github.com/koyashiro/md2xlsx/pkg/parser"
 )
 
 func main() {
@@ -30,10 +31,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	md := md2xlsx.ParseMarkdown(data)
+	md := parser.ParseMarkdown(data)
 	s := md.AsSpec()
 
-	b := md2xlsx.NewBook()
+	b := excel.NewBook()
 	b.WriteSpec(s)
 	if err := b.SaveAs(output); err != nil {
 		fmt.Println(err)

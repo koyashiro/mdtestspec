@@ -1,10 +1,12 @@
-package md2xlsx
+package excel
 
 import (
 	"fmt"
 	"strings"
 
 	"github.com/xuri/excelize/v2"
+
+	"github.com/koyashiro/md2xlsx/pkg/spec"
 )
 
 const CategoryCol = "A"
@@ -36,7 +38,7 @@ func (b *Book) SaveAs(name string) error {
 	return b.file.SaveAs(name)
 }
 
-func (b *Book) WriteSpec(spec *Spec) {
+func (b *Book) WriteSpec(spec *spec.Spec) {
 	var sheet string
 	if spec.Name == "" {
 		sheet = "no title"

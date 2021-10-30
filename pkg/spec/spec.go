@@ -1,4 +1,4 @@
-package md2xlsx
+package spec
 
 type Spec struct {
 	Name       string
