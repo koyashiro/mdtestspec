@@ -97,7 +97,10 @@ func (b *Book) WriteSpec(spec *spec.Spec) error {
 			}
 
 			from := i
-			for _, ssc := range sc.SubSubCategories {
+			for j, ssc := range sc.SubSubCategories {
+				if j != 0 {
+					i++
+				}
 				if err := setSubSubCategory(b.file, sheet, i, ssc.Name, styleID); err != nil {
 					return err
 				}
@@ -107,9 +110,8 @@ func (b *Book) WriteSpec(spec *spec.Spec) error {
 				if err := setProcedures(b.file, sheet, i, ssc.Procedures, &sb, styleID); err != nil {
 					return err
 				}
-				i++
 			}
-			to := i - 1
+			to := i
 
 			hcell := fmt.Sprintf("%s%d", SubCategoryCol, from)
 			vcell := fmt.Sprintf("%s%d", SubCategoryCol, to)
@@ -117,7 +119,7 @@ func (b *Book) WriteSpec(spec *spec.Spec) error {
 				return err
 			}
 		}
-		to := i - 1
+		to := i
 
 		hcell := fmt.Sprintf("%s%d", CategoryCol, from)
 		vcell := fmt.Sprintf("%s%d", CategoryCol, to)
