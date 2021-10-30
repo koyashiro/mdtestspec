@@ -148,35 +148,46 @@ func setCelsWidth(f *excelize.File, sheet string) error {
 
 func setHeaders(f *excelize.File, sheet string) error {
 	const headerRow = 1
-	axis := fmt.Sprintf("%s%d", CategoryCol, headerRow)
-	if err := f.SetCellStr(sheet, axis, CategoryHeader); err != nil {
-		return err
-	}
-	axis = fmt.Sprintf("%s%d", SubCategoryCol, headerRow)
-	if err := f.SetCellStr(sheet, axis, SubCategoryHeader); err != nil {
-		return err
-	}
-	axis = fmt.Sprintf("%s%d", SubSubCategoryCol, headerRow)
-	if err := f.SetCellStr(sheet, axis, SubSubCategoryHeader); err != nil {
-		return err
-	}
-	axis = fmt.Sprintf("%s%d", ProceduresCol, headerRow)
-	if err := f.SetCellStr(sheet, axis, ProcedureHeader); err != nil {
-		return err
-	}
-	axis = fmt.Sprintf("%s%d", ConfirmationsCol, headerRow)
-	if err := f.SetCellStr(sheet, axis, ProcedureHeader); err != nil {
-		return err
-	}
-	return nil
-}
 
-func setCellStyle(f *excelize.File, sheet string, rowTo int) error {
-	styleID, err := f.NewStyle(`{ "alignment": { "vertical": "top", "wrap_text": true } }`)
+	categoryColAxis := fmt.Sprintf("%s%d", CategoryCol, headerRow)
+	if err := f.SetCellStr(sheet, categoryColAxis, CategoryHeader); err != nil {
+		return err
+	}
+
+	subCategoryColAxis := fmt.Sprintf("%s%d", SubCategoryCol, headerRow)
+	if err := f.SetCellStr(sheet, subCategoryColAxis, SubCategoryHeader); err != nil {
+		return err
+	}
+
+	subSubCategoryColAxis := fmt.Sprintf("%s%d", SubSubCategoryCol, headerRow)
+	if err := f.SetCellStr(sheet, subSubCategoryColAxis, SubSubCategoryHeader); err != nil {
+		return err
+	}
+
+	proceduresColAxis := fmt.Sprintf("%s%d", ProceduresCol, headerRow)
+	if err := f.SetCellStr(sheet, proceduresColAxis, ProcedureHeader); err != nil {
+		return err
+	}
+
+	confirmationsColAxis := fmt.Sprintf("%s%d", ConfirmationsCol, headerRow)
+	if err := f.SetCellStr(sheet, confirmationsColAxis, ProcedureHeader); err != nil {
+		return err
+	}
+
+	styleID, err := f.NewStyle(`{ "alignment": { "horizontal": "center", "vertical": "center" } }`)
 	if err != nil {
 		return err
 	}
-	hcell := fmt.Sprintf("%s%d", CategoryCol, 1)
+	return f.SetCellStyle(sheet, categoryColAxis, confirmationsColAxis, styleID)
+}
+
+func setCellStyle(f *excelize.File, sheet string, rowTo int) error {
+	const rowFrom = 2
+	styleID, err := f.NewStyle(`{ "alignment": { "horizontal": "left", "vertical": "top", "wrap_text": true } }`)
+	if err != nil {
+		return err
+	}
+	hcell := fmt.Sprintf("%s%d", CategoryCol, rowFrom)
 	vcell := fmt.Sprintf("%s%d", ConfirmationsCol, rowTo)
 	return f.SetCellStyle(sheet, hcell, vcell, styleID)
 }
