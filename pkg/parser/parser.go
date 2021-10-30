@@ -102,7 +102,7 @@ func parseHeading(heading *ast.Heading) string {
 }
 
 func parseList(list *ast.List) []string {
-	procedures := make([]string, 0)
+	result := make([]string, 0)
 	for _, n := range list.Children {
 		if li, ok := n.(*ast.ListItem); ok {
 			for _, n := range li.Children {
@@ -110,7 +110,7 @@ func parseList(list *ast.List) []string {
 					for _, n := range p.Children {
 						if t, ok := n.(*ast.Text); ok {
 							if l := string(t.Literal); l != "" {
-								procedures = append(procedures, l)
+								result = append(result, l)
 								continue
 							}
 						}
@@ -122,5 +122,5 @@ func parseList(list *ast.List) []string {
 			continue
 		}
 	}
-	return procedures
+	return result
 }
