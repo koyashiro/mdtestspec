@@ -190,7 +190,7 @@ func setHeaders(f *excelize.File, sheet string) error {
 	}
 
 	confirmationsColAxis := fmt.Sprintf("%s%d", ConfirmationsCol, headerRow)
-	if err := f.SetCellStr(sheet, confirmationsColAxis, ProcedureHeader); err != nil {
+	if err := f.SetCellStr(sheet, confirmationsColAxis, ConfirmatinHeader); err != nil {
 		return err
 	}
 
