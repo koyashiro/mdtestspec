@@ -108,31 +108,6 @@ func Execute() {
 	}
 }
 
-func readData(input string) ([]byte, error) {
-	var data []byte
-	if input == "-" {
-		data = make([]byte, 0)
-		r := bufio.NewReader(os.Stdin)
-		for {
-			l, err := r.ReadByte()
-			if err == io.EOF {
-				break
-			} else if err != nil {
-				fmt.Println(err.Error())
-				os.Exit(1)
-			}
-			data = append(data, l)
-		}
-	} else {
-		var err error
-		data, err = os.ReadFile(input)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return data, nil
-}
-
 func init() {
 	rootCmd.Flags().StringVarP(&output, "output", "o", "-", "output filepath")
 	rootCmd.Flags().StringVarP(&format, "format", "f", "auto", "output format")
