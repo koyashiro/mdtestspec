@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-go install github.com/koyashiro/md2xlsx/cmd/md2xlsx
+go install github.com/koyashiro/md2xlsx
 ```
 
 ## Usage
