@@ -6,8 +6,8 @@ on:
       - develop
     paths:
       - cmd/**
+      - internal/**
       - pkg/**
-      - main.go
       - go.mod
       - go.sum
   pull_request:
@@ -16,8 +16,8 @@ on:
       - main
     paths:
       - cmd/**
+      - internal/**
       - pkg/**
-      - main.go
       - go.mod
       - go.sum
 
