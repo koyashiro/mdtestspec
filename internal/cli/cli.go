@@ -105,7 +105,6 @@ var rootCmd = cobra.Command{
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		rootCmd.PrintErrln(err)
 		os.Exit(1)
 	}
 }
