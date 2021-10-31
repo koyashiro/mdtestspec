@@ -52,6 +52,9 @@ var rootCmd = cobra.Command{
 		}
 
 		if format == "auto" {
+			if output == "-" {
+				return errors.New("format or output required")
+			}
 			format = filepath.Ext(output)[1:]
 		}
 
