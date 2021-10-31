@@ -8,7 +8,7 @@ import (
 
 	"github.com/xuri/excelize/v2"
 
-	"github.com/koyashiro/md2xlsx/pkg/spec"
+	"github.com/koyashiro/mdtestspec/pkg/spec"
 )
 
 const CategoryCol = "A"

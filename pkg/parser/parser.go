@@ -7,7 +7,7 @@ import (
 	"github.com/gomarkdown/markdown/ast"
 	"github.com/gomarkdown/markdown/parser"
 
-	"github.com/koyashiro/md2xlsx/pkg/spec"
+	"github.com/koyashiro/mdtestspec/pkg/spec"
 )
 
 func ParseSpec(input []byte) (*spec.Spec, error) {

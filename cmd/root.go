@@ -12,16 +12,16 @@ import (
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 
-	"github.com/koyashiro/md2xlsx/pkg/excel"
-	"github.com/koyashiro/md2xlsx/pkg/parser"
+	"github.com/koyashiro/mdtestspec/pkg/excel"
+	"github.com/koyashiro/mdtestspec/pkg/parser"
 )
 
 var output string
 var format string
 
 var rootCmd = cobra.Command{
-	Use:     "md2xlsx INPUT",
-	Example: "md2xlsx spec.md",
+	Use:     "mdtestspec INPUT",
+	Example: "mdtestspec spec.md",
 	Args:    cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		input := args[0]

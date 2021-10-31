@@ -1,6 +1,6 @@
 package main
 
-import "github.com/koyashiro/md2xlsx/cmd"
+import "github.com/koyashiro/mdtestspec/cmd"
 
 func main() {
 	cmd.Execute()

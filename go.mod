@@ -1,4 +1,4 @@
-module github.com/koyashiro/md2xlsx
+module github.com/koyashiro/mdtestspec
 
 go 1.17
 
