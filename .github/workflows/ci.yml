@@ -3,18 +3,21 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - develop
     paths:
       - cmd/**
       - pkg/**
+      - main.go
       - go.mod
       - go.sum
   pull_request:
     branches:
+      - develop
       - main
     paths:
       - cmd/**
       - pkg/**
+      - main.go
       - go.mod
       - go.sum
 
