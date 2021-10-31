@@ -56,6 +56,7 @@ var rootCmd = cobra.Command{
 			format = filepath.Ext(output)[1:]
 		}
 
+		var result []byte
 		switch format {
 		case "xlsx":
 			book, err := excel.CreateBook(spec)
@@ -63,29 +64,37 @@ var rootCmd = cobra.Command{
 				return err
 			}
 
-			if err := book.SaveAs(output); err != nil {
+			buf, err := book.WriteToBuffer()
+			if err != nil {
 				return err
 			}
+
+			result = buf.Bytes()
 		case "json":
-			j, err := json.Marshal(spec)
+			var err error
+			result, err = json.Marshal(spec)
 			if err != nil {
 				return err
 			}
-
-			if err := os.WriteFile(output, j, 0644); err != nil {
-				return err
-			}
+			result = append(result, '\n')
 		case "yaml", "yml":
-			y, err := yaml.Marshal(spec)
+			var err error
+			result, err = yaml.Marshal(spec)
 			if err != nil {
-				return err
-			}
-
-			if err := os.WriteFile(output, y, 0644); err != nil {
 				return err
 			}
 		default:
 			return errors.New("invalid format")
+		}
+
+		if output == "-" {
+			if _, err := os.Stdout.Write(result); err != nil {
+				return err
+			}
+		} else {
+			if err := os.WriteFile(output, result, 0644); err != nil {
+				return err
+			}
 		}
 
 		return nil
@@ -125,6 +134,6 @@ func readData(input string) ([]byte, error) {
 }
 
 func init() {
-	rootCmd.Flags().StringVarP(&output, "output", "o", "output.xlsx", "output filepath")
+	rootCmd.Flags().StringVarP(&output, "output", "o", "-", "output filepath")
 	rootCmd.Flags().StringVarP(&format, "format", "f", "auto", "output format")
 }
