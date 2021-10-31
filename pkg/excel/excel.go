@@ -29,14 +29,6 @@ const ConfirmationWidth = 55.
 const RemarkWidth = 55.
 const ResultWidth = 10.
 
-const CategoryHeader = "Category"
-const SubCategoryHeader = "Sub-category"
-const SubSubCategoryHeader = "Sub-sub-category"
-const ProcedureHeader = "Procedure"
-const ConfirmatinHeader = "Confirmation"
-const RemarksHeader = "Remarks"
-const ResultHeader = "Result"
-
 type Book struct {
 	file *excelize.File
 }
@@ -53,7 +45,33 @@ func (b *Book) WriteToBuffer() (*bytes.Buffer, error) {
 	return b.file.WriteToBuffer()
 }
 
-func CreateBook(spec *spec.Spec) (*Book, error) {
+type Header struct {
+	Category       string
+	SubCategory    string
+	SubSubCategory string
+	Procedure      string
+	Confirmation   string
+	Remarks        string
+	Result         string
+}
+
+type Config struct {
+	Header Header
+}
+
+var DefaultConfig = Config{
+	Header: Header{
+		Category:       "Category",
+		SubCategory:    "Sub-category",
+		SubSubCategory: "Sub-sub-category",
+		Procedure:      "Procedure",
+		Confirmation:   "Confirmation",
+		Remarks:        "Remarks",
+		Result:         "Result",
+	},
+}
+
+func CreateBook(spec *spec.Spec, config *Config) (*Book, error) {
 	file := excelize.NewFile()
 
 	var sheet string
@@ -72,7 +90,10 @@ func CreateBook(spec *spec.Spec) (*Book, error) {
 		return nil, err
 	}
 
-	if err := setHeaders(file, sheet); err != nil {
+	if config == nil {
+		config = &DefaultConfig
+	}
+	if err := setHeaders(file, sheet, &config.Header); err != nil {
 		return nil, err
 	}
 
@@ -166,41 +187,41 @@ func setCelsWidth(f *excelize.File, sheet string) error {
 	return nil
 }
 
-func setHeaders(f *excelize.File, sheet string) error {
+func setHeaders(f *excelize.File, sheet string, header *Header) error {
 	const headerRow = 1
 
 	categoryColAxis := fmt.Sprintf("%s%d", CategoryCol, headerRow)
-	if err := f.SetCellStr(sheet, categoryColAxis, CategoryHeader); err != nil {
+	if err := f.SetCellStr(sheet, categoryColAxis, header.Category); err != nil {
 		return err
 	}
 
 	subCategoryColAxis := fmt.Sprintf("%s%d", SubCategoryCol, headerRow)
-	if err := f.SetCellStr(sheet, subCategoryColAxis, SubCategoryHeader); err != nil {
+	if err := f.SetCellStr(sheet, subCategoryColAxis, header.SubCategory); err != nil {
 		return err
 	}
 
 	subSubCategoryColAxis := fmt.Sprintf("%s%d", SubSubCategoryCol, headerRow)
-	if err := f.SetCellStr(sheet, subSubCategoryColAxis, SubSubCategoryHeader); err != nil {
+	if err := f.SetCellStr(sheet, subSubCategoryColAxis, header.SubSubCategory); err != nil {
 		return err
 	}
 
 	proceduresColAxis := fmt.Sprintf("%s%d", ProceduresCol, headerRow)
-	if err := f.SetCellStr(sheet, proceduresColAxis, ProcedureHeader); err != nil {
+	if err := f.SetCellStr(sheet, proceduresColAxis, header.Procedure); err != nil {
 		return err
 	}
 
 	confirmationsColAxis := fmt.Sprintf("%s%d", ConfirmationsCol, headerRow)
-	if err := f.SetCellStr(sheet, confirmationsColAxis, ConfirmatinHeader); err != nil {
+	if err := f.SetCellStr(sheet, confirmationsColAxis, header.Confirmation); err != nil {
 		return err
 	}
 
 	remarksColAxis := fmt.Sprintf("%s%d", RemarksCol, headerRow)
-	if err := f.SetCellStr(sheet, remarksColAxis, RemarksHeader); err != nil {
+	if err := f.SetCellStr(sheet, remarksColAxis, header.Remarks); err != nil {
 		return err
 	}
 
 	resultColAxis := fmt.Sprintf("%s%d", ResultCol, headerRow)
-	if err := f.SetCellStr(sheet, resultColAxis, ResultHeader); err != nil {
+	if err := f.SetCellStr(sheet, resultColAxis, header.Result); err != nil {
 		return err
 	}
 

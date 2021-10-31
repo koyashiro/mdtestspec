@@ -17,6 +17,13 @@ import (
 
 var output string
 var format string
+var categoryHeader string
+var subCategoryHeader string
+var subSubCategoryHeader string
+var procedureHeader string
+var confirmationHeader string
+var remarksHeader string
+var resultHeader string
 
 var rootCmd = cobra.Command{
 	Use:     "mdtestspec INPUT",
@@ -58,10 +65,33 @@ var rootCmd = cobra.Command{
 			format = filepath.Ext(output)[1:]
 		}
 
+		config := excel.DefaultConfig
+		if categoryHeader != "" {
+			config.Header.Category = categoryHeader
+		}
+		if subCategoryHeader != "" {
+			config.Header.SubCategory = subCategoryHeader
+		}
+		if subSubCategoryHeader != "" {
+			config.Header.SubSubCategory = subSubCategoryHeader
+		}
+		if procedureHeader != "" {
+			config.Header.Procedure = procedureHeader
+		}
+		if confirmationHeader != "" {
+			config.Header.Confirmation = confirmationHeader
+		}
+		if remarksHeader != "" {
+			config.Header.Remarks = remarksHeader
+		}
+		if resultHeader != "" {
+			config.Header.Result = resultHeader
+		}
+
 		var result []byte
 		switch format {
 		case "xlsx":
-			book, err := excel.CreateBook(spec)
+			book, err := excel.CreateBook(spec, &config)
 			if err != nil {
 				return err
 			}
@@ -112,4 +142,11 @@ func Execute() {
 func init() {
 	rootCmd.Flags().StringVarP(&output, "output", "o", "-", "output filepath")
 	rootCmd.Flags().StringVarP(&format, "format", "f", "auto", "output format")
+	rootCmd.Flags().StringVarP(&categoryHeader, "header-category", "", "Category", "Category header")
+	rootCmd.Flags().StringVarP(&subCategoryHeader, "header-subcategory", "", "Sub-category", "Sub-category header")
+	rootCmd.Flags().StringVarP(&subSubCategoryHeader, "header-subsubcategory", "", "Sub-sub-category", "Sub-sub-category header")
+	rootCmd.Flags().StringVarP(&procedureHeader, "header-procedure", "", "Procedure", "Procedure header")
+	rootCmd.Flags().StringVarP(&confirmationHeader, "header-confirmation", "", "Confirmation", "Confirmation header")
+	rootCmd.Flags().StringVarP(&remarksHeader, "header-remarks", "", "Remarks", "Remarks header")
+	rootCmd.Flags().StringVarP(&resultHeader, "header-result", "", "Result", "Result header")
 }
