@@ -2,18 +2,22 @@ package cmd
 
 import (
 	"bufio"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
 
 	"github.com/koyashiro/md2xlsx/pkg/excel"
 	"github.com/koyashiro/md2xlsx/pkg/parser"
 )
 
 var output string
+var format string
 
 var rootCmd = cobra.Command{
 	Use:     "md2xlsx INPUT",
@@ -37,7 +41,7 @@ var rootCmd = cobra.Command{
 			}
 		} else {
 			var err error
-			data, err = ioutil.ReadFile(input)
+			data, err = os.ReadFile(input)
 			if err != nil {
 				return err
 			}
@@ -48,13 +52,40 @@ var rootCmd = cobra.Command{
 			return err
 		}
 
-		book, err := excel.CreateBook(spec)
-		if err != nil {
-			return err
+		if format == "auto" {
+			format = filepath.Ext(output)[1:]
 		}
 
-		if err := book.SaveAs(output); err != nil {
-			return err
+		switch format {
+		case "xlsx":
+			book, err := excel.CreateBook(spec)
+			if err != nil {
+				return err
+			}
+
+			if err := book.SaveAs(output); err != nil {
+				return err
+			}
+		case "json":
+			j, err := json.Marshal(spec)
+			if err != nil {
+				return err
+			}
+
+			if err := os.WriteFile(output, j, 0644); err != nil {
+				return err
+			}
+		case "yaml", "yml":
+			y, err := yaml.Marshal(spec)
+			if err != nil {
+				return err
+			}
+
+			if err := os.WriteFile(output, y, 0644); err != nil {
+				return err
+			}
+		default:
+			return errors.New("invalid format")
 		}
 
 		return nil
@@ -85,7 +116,7 @@ func readData(input string) ([]byte, error) {
 		}
 	} else {
 		var err error
-		data, err = ioutil.ReadFile(input)
+		data, err = os.ReadFile(input)
 		if err != nil {
 			return nil, err
 		}
@@ -95,4 +126,5 @@ func readData(input string) ([]byte, error) {
 
 func init() {
 	rootCmd.Flags().StringVarP(&output, "output", "o", "output.xlsx", "output filepath")
+	rootCmd.Flags().StringVarP(&format, "format", "f", "auto", "output format")
 }

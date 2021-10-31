@@ -6,6 +6,7 @@ require (
 	github.com/gomarkdown/markdown v0.0.0-20210918233619-6c1113f12c4a
 	github.com/spf13/cobra v1.2.1
 	github.com/xuri/excelize/v2 v2.4.1
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (

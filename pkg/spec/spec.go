@@ -1,23 +1,23 @@
 package spec
 
 type Spec struct {
-	Name       string
-	Categories []*Category
+	Name       string      `json:"name" yaml:"name"`
+	Categories []*Category `json:"categories" yaml:"categories"`
 }
 
 type Category struct {
-	Name          string
-	SubCategories []*SubCategory
+	Name          string         `json:"name" yaml:"name"`
+	SubCategories []*SubCategory `json:"subCategories" yaml:"sub_categories"`
 }
 
 type SubCategory struct {
-	Name             string
-	SubSubCategories []*SubSubCategory
+	Name             string            `json:"name" json:"name"`
+	SubSubCategories []*SubSubCategory `json:"subSubCategories" json:"sub_sub_categories"`
 }
 
 type SubSubCategory struct {
-	Name          string
-	Procedures    []string
-	Confirmations []string
-	Remarks       []string
+	Name          string   `json:"name" yaml:"name"`
+	Procedures    []string `json:"procedures" yaml:"procedures"`
+	Confirmations []string `json:"confirmations" yaml:"confirmations"`
+	Remarks       []string `json:"remarks" yaml:"remarks"`
 }
