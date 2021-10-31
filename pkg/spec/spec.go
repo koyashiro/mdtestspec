@@ -11,8 +11,8 @@ type Category struct {
 }
 
 type SubCategory struct {
-	Name             string            `json:"name" json:"name"`
-	SubSubCategories []*SubSubCategory `json:"subSubCategories" json:"sub_sub_categories"`
+	Name             string            `json:"name" yaml:"name"`
+	SubSubCategories []*SubSubCategory `json:"subSubCategories" yaml:"sub_sub_categories"`
 }
 
 type SubSubCategory struct {
