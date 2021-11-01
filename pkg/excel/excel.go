@@ -56,7 +56,8 @@ type Header struct {
 }
 
 type Config struct {
-	Header Header
+	Header     Header
+	FontFamily string
 }
 
 var DefaultConfig = Config{
@@ -93,7 +94,7 @@ func CreateBook(spec *spec.Spec, config *Config) (*Book, error) {
 	if config == nil {
 		config = &DefaultConfig
 	}
-	if err := setHeaders(file, sheet, &config.Header); err != nil {
+	if err := setHeaders(file, sheet, &config.Header, config.FontFamily); err != nil {
 		return nil, err
 	}
 
@@ -155,7 +156,7 @@ func CreateBook(spec *spec.Spec, config *Config) (*Book, error) {
 		}
 	}
 
-	if err := setCellStyle(file, sheet, row); err != nil {
+	if err := setCellStyle(file, sheet, row, config.FontFamily); err != nil {
 		return nil, err
 	}
 
@@ -187,7 +188,7 @@ func setCelsWidth(f *excelize.File, sheet string) error {
 	return nil
 }
 
-func setHeaders(f *excelize.File, sheet string, header *Header) error {
+func setHeaders(f *excelize.File, sheet string, header *Header, fontFamily string) error {
 	const headerRow = 1
 
 	categoryColAxis := fmt.Sprintf("%s%d", CategoryCol, headerRow)
@@ -225,7 +226,7 @@ func setHeaders(f *excelize.File, sheet string, header *Header) error {
 		return err
 	}
 
-	styleID, err := f.NewStyle(`{
+	style := fmt.Sprintf(`{
 		"border": [
 			{
 				"type": "top",
@@ -249,18 +250,20 @@ func setHeaders(f *excelize.File, sheet string, header *Header) error {
 			}
 		],
 		"fill": { "type": "pattern", "pattern": 1, "color": ["#5B9BD5", "#5B9BD5"] },
-		"font": { "color": "#FFFFFF" },
+		"font": { "family": "%s", "color": "#FFFFFF" },
 		"alignment": { "horizontal": "center", "vertical": "center" }
-	}`)
+	}`, fontFamily)
+	styleID, err := f.NewStyle(style)
 	if err != nil {
 		return err
 	}
+
 	return f.SetCellStyle(sheet, categoryColAxis, remarksColAxis, styleID)
 }
 
-func setCellStyle(f *excelize.File, sheet string, rowTo int) error {
+func setCellStyle(f *excelize.File, sheet string, rowTo int, fontFamily string) error {
 	const rowFrom = 2
-	styleID, err := f.NewStyle(`{
+	style := fmt.Sprintf(`{
 		"border": [
 			{
 				"type": "top",
@@ -283,11 +286,14 @@ func setCellStyle(f *excelize.File, sheet string, rowTo int) error {
 				"style": 2
 			}
 		],
+		"font": { "family": "%s" },
 		"alignment": { "horizontal": "left", "vertical": "top", "wrap_text": true }
-	}`)
+	}`, fontFamily)
+	styleID, err := f.NewStyle(style)
 	if err != nil {
 		return err
 	}
+
 	hcell := fmt.Sprintf("%s%d", CategoryCol, rowFrom)
 	vcell := fmt.Sprintf("%s%d", RemarksCol, rowTo)
 	return f.SetCellStyle(sheet, hcell, vcell, styleID)

@@ -24,6 +24,7 @@ var procedureHeader string
 var confirmationHeader string
 var resultHeader string
 var remarksHeader string
+var fontFamily string
 
 var rootCmd = cobra.Command{
 	Use:     "mdtestspec INPUT",
@@ -87,6 +88,9 @@ var rootCmd = cobra.Command{
 		if remarksHeader != "" {
 			config.Header.Remarks = remarksHeader
 		}
+		if fontFamily != "" {
+			config.FontFamily = fontFamily
+		}
 
 		var result []byte
 		switch format {
@@ -149,4 +153,5 @@ func init() {
 	rootCmd.Flags().StringVarP(&confirmationHeader, "header-confirmation", "", "Confirmation", "Confirmation header")
 	rootCmd.Flags().StringVarP(&resultHeader, "header-result", "", "Result", "Result header")
 	rootCmd.Flags().StringVarP(&remarksHeader, "header-remarks", "", "Remarks", "Remarks header")
+	rootCmd.Flags().StringVarP(&fontFamily, "font-family", "", "Yu Gothic", "Font family")
 }
