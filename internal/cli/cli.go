@@ -22,8 +22,8 @@ var subCategoryHeader string
 var subSubCategoryHeader string
 var procedureHeader string
 var confirmationHeader string
-var remarksHeader string
 var resultHeader string
+var remarksHeader string
 
 var rootCmd = cobra.Command{
 	Use:     "mdtestspec INPUT",
@@ -81,11 +81,11 @@ var rootCmd = cobra.Command{
 		if confirmationHeader != "" {
 			config.Header.Confirmation = confirmationHeader
 		}
-		if remarksHeader != "" {
-			config.Header.Remarks = remarksHeader
-		}
 		if resultHeader != "" {
 			config.Header.Result = resultHeader
+		}
+		if remarksHeader != "" {
+			config.Header.Remarks = remarksHeader
 		}
 
 		var result []byte
@@ -147,6 +147,6 @@ func init() {
 	rootCmd.Flags().StringVarP(&subSubCategoryHeader, "header-subsubcategory", "", "Sub-sub-category", "Sub-sub-category header")
 	rootCmd.Flags().StringVarP(&procedureHeader, "header-procedure", "", "Procedure", "Procedure header")
 	rootCmd.Flags().StringVarP(&confirmationHeader, "header-confirmation", "", "Confirmation", "Confirmation header")
-	rootCmd.Flags().StringVarP(&remarksHeader, "header-remarks", "", "Remarks", "Remarks header")
 	rootCmd.Flags().StringVarP(&resultHeader, "header-result", "", "Result", "Result header")
+	rootCmd.Flags().StringVarP(&remarksHeader, "header-remarks", "", "Remarks", "Remarks header")
 }

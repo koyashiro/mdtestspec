@@ -17,9 +17,9 @@ const SubSubCategoryCol = "C"
 const ProceduresCol = "D"
 const ConfirmationsCol = "E"
 const ConfirmationPrefix = '・'
-const RemarksCol = "F"
+const ResultCol = "F"
+const RemarksCol = "G"
 const RemarksPrefix = '・'
-const ResultCol = "G"
 
 const CategoryWidth = 20.
 const SubCategoryWidth = 25.
@@ -51,8 +51,8 @@ type Header struct {
 	SubSubCategory string
 	Procedure      string
 	Confirmation   string
-	Remarks        string
 	Result         string
+	Remarks        string
 }
 
 type Config struct {
@@ -66,8 +66,8 @@ var DefaultConfig = Config{
 		SubSubCategory: "Sub-sub-category",
 		Procedure:      "Procedure",
 		Confirmation:   "Confirmation",
-		Remarks:        "Remarks",
 		Result:         "Result",
+		Remarks:        "Remarks",
 	},
 }
 
@@ -178,10 +178,10 @@ func setCelsWidth(f *excelize.File, sheet string) error {
 	if err := f.SetColWidth(sheet, ConfirmationsCol, ConfirmationsCol, ConfirmationWidth); err != nil {
 		return err
 	}
-	if err := f.SetColWidth(sheet, RemarksCol, RemarksCol, RemarkWidth); err != nil {
+	if err := f.SetColWidth(sheet, ResultCol, ResultCol, ResultWidth); err != nil {
 		return err
 	}
-	if err := f.SetColWidth(sheet, ResultCol, ResultCol, ResultWidth); err != nil {
+	if err := f.SetColWidth(sheet, RemarksCol, RemarksCol, RemarkWidth); err != nil {
 		return err
 	}
 	return nil
@@ -215,13 +215,13 @@ func setHeaders(f *excelize.File, sheet string, header *Header) error {
 		return err
 	}
 
-	remarksColAxis := fmt.Sprintf("%s%d", RemarksCol, headerRow)
-	if err := f.SetCellStr(sheet, remarksColAxis, header.Remarks); err != nil {
+	resultColAxis := fmt.Sprintf("%s%d", ResultCol, headerRow)
+	if err := f.SetCellStr(sheet, resultColAxis, header.Result); err != nil {
 		return err
 	}
 
-	resultColAxis := fmt.Sprintf("%s%d", ResultCol, headerRow)
-	if err := f.SetCellStr(sheet, resultColAxis, header.Result); err != nil {
+	remarksColAxis := fmt.Sprintf("%s%d", RemarksCol, headerRow)
+	if err := f.SetCellStr(sheet, remarksColAxis, header.Remarks); err != nil {
 		return err
 	}
 
@@ -255,7 +255,7 @@ func setHeaders(f *excelize.File, sheet string, header *Header) error {
 	if err != nil {
 		return err
 	}
-	return f.SetCellStyle(sheet, categoryColAxis, resultColAxis, styleID)
+	return f.SetCellStyle(sheet, categoryColAxis, remarksColAxis, styleID)
 }
 
 func setCellStyle(f *excelize.File, sheet string, rowTo int) error {
@@ -289,7 +289,7 @@ func setCellStyle(f *excelize.File, sheet string, rowTo int) error {
 		return err
 	}
 	hcell := fmt.Sprintf("%s%d", CategoryCol, rowFrom)
-	vcell := fmt.Sprintf("%s%d", ResultCol, rowTo)
+	vcell := fmt.Sprintf("%s%d", RemarksCol, rowTo)
 	return f.SetCellStyle(sheet, hcell, vcell, styleID)
 }
 
