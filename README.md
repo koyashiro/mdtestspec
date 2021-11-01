@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-go install github.com/koyashiro/mdtestspec/cmd/mdtestspec
+go install github.com/koyashiro/mdtestspec/cmd/mdtestspec@latest
 ```
 
 ## Usage
