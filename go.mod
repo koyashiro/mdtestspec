@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/gomarkdown/markdown v0.0.0-20211212230626-5af6ad2f47df
 	github.com/spf13/cobra v1.3.0
-	github.com/xuri/excelize/v2 v2.4.1
+	github.com/xuri/excelize/v2 v2.5.0
 	gopkg.in/yaml.v2 v2.4.0
 )
 
