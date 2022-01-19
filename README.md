@@ -1,5 +1,7 @@
 # mdtestspec
 
+**⚠️ NOTE: This repository has been archived. Migrated to [testspecgen](https://github.com/koyashiro/testspecgen). ⚠️**
+
 ## Installation
 
 ```sh
